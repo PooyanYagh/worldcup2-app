@@ -767,8 +767,7 @@ export default function Dashboard({ user, onLogout }) {
       )}
 
       {/* هدر */}
-      {/* هدر */}
-<div className="bg-[#00194C] rounded-b-[32px] pt-8 pb-20 px-6 shadow-lg relative z-10 mb-16">
+      <div className="bg-[#00194C] rounded-b-[32px] pt-8 pb-20 px-6 shadow-lg relative z-30">
         <div className="flex justify-between items-start">
           <div>
             <p className="text-[#94A3B8] text-sm mb-1">{isAdmin ? '👑 داشبورد مدیریت' : 'داشبورد پیش‌بینی'}</p>
@@ -779,7 +778,7 @@ export default function Dashboard({ user, onLogout }) {
           </button>
         </div>
         
-        <div className="absolute -bottom-8 left-6 right-6 bg-[#FDBA2D] rounded-[20px] p-5 shadow-[0_8px_30px_rgba(253,186,45,0.3)] flex justify-between items-center text-[#00194C]">
+        <div className="absolute -bottom-10 left-6 right-6 bg-[#FDBA2D] rounded-[20px] p-5 shadow-[0_8px_30px_rgba(253,186,45,0.3)] flex justify-between items-center text-[#00194C]">
           <div>
             <p className="text-sm font-bold opacity-80">امتیاز کل شما</p>
             <p className="text-3xl font-black mt-1">{myPoints} <span className="text-sm font-normal">امتیاز</span></p>
@@ -791,11 +790,14 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       </div>
 
+      {/* 🔥 یک فاصله دهنده اختصاصی برای جلوگیری از روی هم افتادن باکس زرد و استوری‌ها */}
+      <div className="h-16 w-full"></div>
+
       {/* ======================================================== */}
       {/* 📱 سکوهای قهرمانی - استوری اینستاگرام */}
       {/* ======================================================== */}
       {!loading && rankedLeaderboard.length >= 3 && (
-       <section className="px-0 relative z-20">
+        <section className="px-0 relative z-20">
           <div className="flex items-center justify-between px-4 mb-3">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🏆</span>
