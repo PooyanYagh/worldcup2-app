@@ -30,7 +30,7 @@ const getFlagUrl = (teamName) => {
 };
 
 // ============================================================
-// ✅ تابع getImageName
+// ✅ تابع تبدیل اسم به فرمت فایل تصویر
 // ============================================================
 const getImageName = (firstName, lastName) => {
   const key = `${firstName} ${lastName}`.trim();
@@ -68,7 +68,6 @@ export default function Dashboard({ user, onLogout }) {
   const [showDailyLeaderboard, setShowDailyLeaderboard] = useState(false);
   
   const [showConfetti, setShowConfetti] = useState(false);
-  
   const [searchQuery, setSearchQuery] = useState('');
   
   const [selectedUser, setSelectedUser] = useState(null);
@@ -83,7 +82,6 @@ export default function Dashboard({ user, onLogout }) {
 
   const [selectedTeamForHistory, setSelectedTeamForHistory] = useState(null);
   const [isTeamHistoryModalOpen, setIsTeamHistoryModalOpen] = useState(false);
-
   const [isStatsTableModalOpen, setIsStatsTableModalOpen] = useState(false);
 
   const [championPrediction, setChampionPrediction] = useState('');
@@ -104,8 +102,6 @@ export default function Dashboard({ user, onLogout }) {
   const [nowTime, setNowTime] = useState(new Date());
   const CHAMPION_DEADLINE = new Date('2026-07-04T17:00:00Z');
   const isChampionDeadlinePassed = nowTime > CHAMPION_DEADLINE;
-
-  const LAST_MATCH_DATE = new Date('2026-07-19T23:59:59Z');
 
   const isAdmin = (user.first_name === 'پویان' && user.last_name === 'یغمائیان') || (user.first_name === 'Behnia' && user.last_name === 'Zamani');
 
@@ -793,870 +789,876 @@ export default function Dashboard({ user, onLogout }) {
           </div>
         </div>
       </div>
-{/* ======================================================== */}
-{/* 📱 سکوهای قهرمانی - استوری اینستاگرام */}
-{/* ======================================================== */}
-{!loading && rankedLeaderboard.length >= 3 && (
-  <section className="px-0 -mt-6 relative z-20">
-    <div className="flex items-center justify-between px-4 mb-3">
-      <div className="flex items-center gap-2">
-        <span className="text-2xl">🏆</span>
-        <h2 className="text-[#00194C] font-black text-base">سکوهای قهرمانی</h2>
-        <span className="text-[10px] bg-[#FDBA2D] text-[#00194C] font-black px-2 py-0.5 rounded-full">🔥 برترین‌ها</span>
-      </div>
-      <div className="flex items-center gap-1">
-        <span className="text-[10px] text-slate-400 font-bold">برای دیدن استوری ضربه بزنید</span>
-        <span className="text-lg">👆</span>
-      </div>
-    </div>
 
-    <div className="relative overflow-x-auto pb-4 px-4 snap-x snap-mandatory" 
-         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-      <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-      
-      <div className="flex gap-4 w-max">
-        
-        {rankedLeaderboard.filter(p => p.rank === 1).map((user) => {
-          const imageName = getImageName(user.first_name, user.last_name);
-          return (
-            <div 
-              key={user.user_id}
-              className="snap-center w-[320px] sm:w-[380px] flex-shrink-0 scale-105 cursor-pointer"
-              onClick={() => setFullStoryUser({ ...user, rank: 1, imageName })}
-            >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-[#FDBA2D] ring-4 ring-[#FDBA2D]/30 bg-gradient-to-b from-[#FDBA2D]/20 to-[#F59E0B]/10">
-                <div className="relative aspect-[9/16] bg-black/5">
-                  <img 
-                    src={`/images/rank1-${imageName}.jpg`}
-                    alt={`${user.first_name} ${user.last_name}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = '/images/rank1-default.jpg';
-                    }}
-                  />
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#FDBA2D]/40 via-transparent to-transparent"></div>
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent">
-                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-3xl animate-bounce">👑</span>
-                        <span className="bg-[#FDBA2D] text-[#00194C] px-3 py-0.5 rounded-full text-xs font-black">
-                          🥇 رتبه ۱
-                        </span>
-                      </div>
-                      <h3 className="text-2xl font-black">{user.first_name} {user.last_name}</h3>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="text-base font-bold text-[#FDBA2D]">{user.total_points} امتیاز</span>
-                        {user.champion_prediction && (
-                          <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                            🏆 {user.champion_prediction}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute -top-2 -right-2 text-5xl animate-pulse opacity-80">👑</div>
-                  
-                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
-                    <div className="w-12 h-1 bg-white/50 rounded-full"></div>
-                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
+      {/* ======================================================== */}
+      {/* 📱 سکوهای قهرمانی - استوری اینستاگرام */}
+      {/* ======================================================== */}
+      {!loading && rankedLeaderboard.length >= 3 && (
+        <section className="px-0 -mt-6 relative z-20">
+          <div className="flex items-center justify-between px-4 mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🏆</span>
+              <h2 className="text-[#00194C] font-black text-base">سکوهای قهرمانی</h2>
+              <span className="text-[10px] bg-[#FDBA2D] text-[#00194C] font-black px-2 py-0.5 rounded-full">🔥 برترین‌ها</span>
             </div>
-          );
-        })}
-
-        {rankedLeaderboard.filter(p => p.rank === 2).map((user) => {
-          const imageName = getImageName(user.first_name, user.last_name);
-          return (
-            <div 
-              key={user.user_id}
-              className="snap-center w-[280px] sm:w-[340px] flex-shrink-0 cursor-pointer"
-              onClick={() => setFullStoryUser({ ...user, rank: 2, imageName })}
-            >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-slate-400 bg-gradient-to-b from-slate-400/10 to-slate-500/5">
-                <div className="relative aspect-[9/16] bg-black/5">
-                  <img 
-                    src={`/images/rank2-${imageName}.jpg`}
-                    alt={`${user.first_name} ${user.last_name}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = '/images/rank2-default.jpg';
-                    }}
-                  />
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
-                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-2xl">🥈</span>
-                        <span className="bg-slate-400/30 backdrop-blur-sm px-3 py-0.5 rounded-full text-xs font-bold">
-                          رتبه ۲
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-black">{user.first_name} {user.last_name}</h3>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="text-sm font-bold text-slate-200">{user.total_points} امتیاز</span>
-                        {user.champion_prediction && (
-                          <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                            🏆 {user.champion_prediction}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
-                    <div className="w-12 h-1 bg-white/50 rounded-full"></div>
-                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] text-slate-400 font-bold">برای دیدن استوری ضربه بزنید</span>
+              <span className="text-lg">👆</span>
             </div>
-          );
-        })}
+          </div>
 
-        {rankedLeaderboard.filter(p => p.rank === 3).map((user) => {
-          const imageName = getImageName(user.first_name, user.last_name);
-          return (
-            <div 
-              key={user.user_id}
-              className="snap-center w-[280px] sm:w-[340px] flex-shrink-0 cursor-pointer"
-              onClick={() => setFullStoryUser({ ...user, rank: 3, imageName })}
-            >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-700 bg-gradient-to-b from-amber-700/10 to-amber-800/5">
-                <div className="relative aspect-[9/16] bg-black/5">
-                  <img 
-                    src={`/images/rank3-${imageName}.jpg`}
-                    alt={`${user.first_name} ${user.last_name}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = '/images/rank3-default.jpg';
-                    }}
-                  />
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
-                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-2xl">🥉</span>
-                        <span className="bg-amber-700/30 backdrop-blur-sm px-3 py-0.5 rounded-full text-xs font-bold">
-                          رتبه ۳
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-black">{user.first_name} {user.last_name}</h3>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="text-sm font-bold text-slate-200">{user.total_points} امتیاز</span>
-                        {user.champion_prediction && (
-                          <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                            🏆 {user.champion_prediction}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
-                    <div className="w-12 h-1 bg-white/50 rounded-full"></div>
-                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-        
-      </div>
-    </div>
-    
-    <div className="flex justify-center mt-3">
-      <button 
-        onClick={() => {
-          const container = document.querySelector('.overflow-x-auto');
-          if (container) {
-            container.scrollTo({ left: 0, behavior: 'smooth' });
-          }
-        }}
-        className="text-[10px] text-slate-400 font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-slate-200 shadow-sm hover:bg-white transition-colors flex items-center gap-1"
-      >
-        <span>👈</span>
-        برای دیدن همه اسکرول کنید
-        <span>👉</span>
-      </button>
-    </div>
-  </section>
-)}
-        
-        {/* سکشن پیش‌بینی قهرمان */}
-        {!loading && (
-          <section className="px-6">
-            {championPrediction ? (
-              <div className="bg-gradient-to-r from-[#00194C] to-[#1e3a8a] rounded-[20px] p-5 shadow-lg relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-[#00194C]/20">
-                <div className="absolute right-0 top-0 opacity-10 text-8xl -mt-4 -mr-4 pointer-events-none">🏆</div>
-                
-                <div className="relative z-10 flex items-center gap-4">
-                  <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center p-2 backdrop-blur-sm border border-white/20 shrink-0">
-                    {getFlagUrl(championPrediction) ? (
-                      <img src={getFlagUrl(championPrediction)} alt={championPrediction} className="w-full h-full object-cover rounded shadow-sm" />
-                    ) : (
-                      <span className="text-2xl">❓</span>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-white/70 text-[11px] font-bold mb-1">
-                      {isChampionDeadlinePassed ? 'پیش‌بینی نهایی شما برای قهرمان:' : 'پیش‌بینی شما برای قهرمان جام:'}
-                    </p>
-                    <h3 className="text-[#FDBA2D] font-black text-xl">{championPrediction}</h3>
-                  </div>
-                </div>
-
-                {!isChampionDeadlinePassed && (
-                  <button 
-                    onClick={() => setIsChampionModalOpen(true)}
-                    className="relative z-10 w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-4 py-2.5 rounded-xl text-xs transition-colors backdrop-blur-sm flex justify-center items-center gap-2"
-                  >
-                    <span>ویرایش انتخاب</span>
-                    <span>✏️</span>
-                  </button>
-                )}
-              </div>
-            ) : (
-              !isChampionDeadlinePassed ? (
-                <div className="bg-gradient-to-r from-rose-500 to-rose-600 rounded-[20px] p-5 shadow-lg text-white flex flex-col sm:flex-row items-center justify-between animate-pulse">
-                   <div className="flex items-center gap-3 mb-3 sm:mb-0 w-full">
-                      <span className="text-4xl shrink-0">🚨</span>
-                      <div>
-                        <h3 className="font-black text-[15px]">فراموش نکنی قهرمان رو حدس بزنی!</h3>
-                        <p className="text-xs opacity-90 mt-1 leading-relaxed">فقط تا قبل از شروع بازی کانادا - مراکش وقت داری.</p>
-                      </div>
-                   </div>
-                   <button 
-                     onClick={() => setIsChampionModalOpen(true)} 
-                     className="bg-white text-rose-600 font-black px-5 py-3 rounded-xl text-xs whitespace-nowrap shadow-sm hover:scale-105 transition-transform w-full sm:w-auto"
-                   >
-                     انتخاب قهرمان 🏆
-                   </button>
-                </div>
-              ) : (
-                <div className="bg-slate-200 rounded-[20px] p-5 border border-slate-300 flex items-center gap-3 shadow-sm">
-                   <span className="text-3xl grayscale">⏳</span>
-                   <div>
-                     <h3 className="font-black text-slate-600 text-sm">مهلت پیش‌بینی قهرمان تمام شد</h3>
-                     <p className="text-[11px] text-slate-500 mt-1 font-bold">متاسفانه شما تیمی را انتخاب نکردید.</p>
-                   </div>
-                </div>
-              )
-            )}
-
-            {isChampionDeadlinePassed && (
-              <div className="mt-4">
-                <button 
-                  onClick={() => setShowChampionAccordion(!showChampionAccordion)}
-                  className="w-full flex justify-between items-center bg-white border border-slate-200 text-[#00194C] font-black py-3 px-4 rounded-xl shadow-sm hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">🕵️‍♂️</span>
-                    <span className="text-xs">مشاهده پیش‌بینی قهرمانِ فامیل</span>
-                  </div>
-                  <span className="text-slate-400 text-xs">{showChampionAccordion ? '▲ بستن' : '▼ باز کردن'}</span>
-                </button>
-
-                {showChampionAccordion && (
-                  <div className="mt-2 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                    <div className="max-h-64 overflow-y-auto p-2 space-y-1 border-b border-slate-100" style={{ scrollbarWidth: 'thin' }}>
-                      {(() => {
-                        const championList = allProfiles
-                          .filter(p => p.champion_prediction)
-                          .map(p => {
-                            const userObj = leaderboard.find(l => l.user_id === p.id);
-                            const isEliminated = eliminatedTeams.includes(p.champion_prediction);
-                            const isCorrect = actualChampion && p.champion_prediction === actualChampion;
-                            return {
-                              ...p,
-                              first_name: userObj?.first_name || 'کاربر',
-                              last_name: userObj?.last_name || '',
-                              points: userObj?.total_points || 0,
-                              isEliminated,
-                              isCorrect
-                            };
-                          })
-                          .sort((a, b) => b.points - a.points);
-
-                        if (championList.length === 0) {
-                          return <div className="text-center text-xs text-slate-400 py-3 font-bold">کسی قهرمان را پیش‌بینی نکرده است!</div>;
-                        }
-
-                        return championList.map(item => (
-                          <div key={item.id} className={`flex justify-between items-center p-2.5 rounded-lg border ${item.id === user.id ? 'bg-[#FFF7ED] border-[#FDBA2D]/30' : 'bg-slate-50 border-slate-100'} ${item.isEliminated && !item.isCorrect ? 'opacity-50' : ''}`}>
-                            <span className="text-xs font-bold text-slate-700">
-                              {item.first_name} {item.last_name}
-                              {item.id === user.id && <span className="mr-2 text-[9px] bg-[#FDBA2D] text-[#00194C] px-1.5 py-0.5 rounded shadow-sm">شما</span>}
-                              {item.isEliminated && !item.isCorrect && <span className="mr-2 text-[9px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded">❌ حذف</span>}
-                              {item.isCorrect && <span className="mr-2 text-[9px] bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded font-black">🏆 +{CHAMPION_BONUS_POINTS} امتیاز</span>}
-                            </span>
-                            <div className={`flex items-center gap-2 bg-white px-2 py-1 rounded shadow-sm border ${item.isEliminated && !item.isCorrect ? 'border-slate-200' : item.isCorrect ? 'border-emerald-300' : 'border-slate-100'}`}>
-                              <span className={`text-[11px] font-black ${item.isEliminated && !item.isCorrect ? 'text-slate-400 line-through' : item.isCorrect ? 'text-emerald-600' : 'text-[#00194C]'}`}>
-                                {item.champion_prediction}
-                              </span>
-                              {getFlagUrl(item.champion_prediction) ? (
-                                <img src={getFlagUrl(item.champion_prediction)} alt={item.champion_prediction} 
-                                     className={`w-5 h-3.5 rounded-[2px] object-cover transition-all duration-500 ${item.isEliminated && !item.isCorrect ? 'grayscale opacity-30' : ''}`} />
-                              ) : (
-                                <span className="text-[10px]">❓</span>
-                              )}
-                              {item.isCorrect && <span className="text-[12px]">🏆</span>}
-                            </div>
-                          </div>
-                        ));
-                      })()}
-                    </div>
-
-                    {championAnalytics && (
-                      <div className="p-3 bg-gradient-to-b from-slate-50 to-white">
-                        <button 
-                          onClick={() => setShowChampionAnalytics(!showChampionAnalytics)}
-                          className="w-full flex justify-between items-center bg-[#00194C] text-white font-bold py-2.5 px-3 rounded-lg text-xs hover:bg-[#00194C]/90 transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span>📊</span>
-                            <span>آنالیز پیش‌بینی قهرمان</span>
-                            {actualChampion && (
-                              <span className="bg-emerald-500 text-[9px] px-1.5 py-0.5 rounded-full">قهرمان مشخص شد!</span>
-                            )}
-                          </div>
-                          <span>{showChampionAnalytics ? '▲' : '▼'}</span>
-                        </button>
-
-                        {showChampionAnalytics && (
-                          <div className="mt-3 space-y-3">
-                            {actualChampion && (
-                              <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-3 text-white text-center shadow">
-                                <p className="text-[10px] font-bold opacity-90">🏆 قهرمان واقعی جام</p>
-                                <div className="flex items-center justify-center gap-2 mt-1">
-                                  {getFlagUrl(actualChampion) ? (
-                                    <img src={getFlagUrl(actualChampion)} alt={actualChampion} className="w-7 h-5 rounded object-cover border border-white/30" />
-                                  ) : (
-                                    <span className="text-xl">🏳️</span>
-                                  )}
-                                  <span className="text-lg font-black">{actualChampion}</span>
-                                </div>
-                              </div>
-                            )}
-
-                            <div className="grid grid-cols-2 gap-2">
-                              <div className="bg-white rounded-xl p-2 border border-slate-100 text-center shadow-sm">
-                                <p className="text-[9px] font-bold text-slate-400">تعداد پیش‌بینی‌ها</p>
-                                <p className="text-lg font-black text-[#00194C]">{championAnalytics.totalPredictions}</p>
-                              </div>
-                              <div className="bg-white rounded-xl p-2 border border-slate-100 text-center shadow-sm">
-                                <p className="text-[9px] font-bold text-slate-400">بازماندگان 🏃</p>
-                                <p className="text-lg font-black text-emerald-500">{championAnalytics.aliveCount}</p>
-                              </div>
-                            </div>
-
-                            {championAnalytics.correctPredictors.length > 0 && (
-                              <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-3 border border-emerald-200">
-                                <div className="flex items-center gap-2 mb-1.5">
-                                  <span className="text-base">🎯</span>
-                                  <span className="text-xs font-black text-emerald-700">پیش‌بینی‌کنندگان درست!</span>
-                                  <span className="text-[8px] bg-emerald-200 text-emerald-700 px-1.5 py-0.5 rounded-full font-bold">+{CHAMPION_BONUS_POINTS} امتیاز</span>
-                                </div>
-                                <div className="flex flex-wrap gap-1.5">
-                                  {championAnalytics.correctPredictors.map(p => {
-                                    const userObj = leaderboard.find(l => l.user_id === p.id);
-                                    return (
-                                      <div key={p.id} className="flex items-center gap-0.5 bg-white px-2 py-1 rounded-lg shadow-sm border border-emerald-200">
-                                        <span className="text-xs font-bold text-emerald-600">🏆</span>
-                                        <span className="text-[10px] font-bold text-slate-700">{userObj?.first_name || 'کاربر'} {userObj?.last_name || ''}</span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-
-                            {championAnalytics.underdogs.length > 0 && (
-                              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-2.5 border border-amber-200">
-                                <div className="flex items-center gap-1.5 mb-1">
-                                  <span className="text-base">🐺</span>
-                                  <span className="text-[10px] font-black text-amber-700">گرگ‌های تنها</span>
-                                </div>
-                                <div className="flex flex-wrap gap-1.5">
-                                  {championAnalytics.underdogs.map(underdog => (
-                                    <div key={underdog.team} className="flex items-center gap-0.5 bg-white px-1.5 py-0.5 rounded-lg shadow-sm border border-amber-200">
-                                      {getFlagUrl(underdog.team) ? (
-                                        <img src={getFlagUrl(underdog.team)} alt={underdog.team} className="w-4 h-3 rounded object-cover" />
-                                      ) : (
-                                        <span>🏳️</span>
-                                      )}
-                                      <span className="text-[9px] font-bold text-slate-700">{underdog.team}</span>
-                                      <span className="text-[7px] text-amber-500 font-black">(🦄)</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-
-                            <div className="bg-white rounded-xl p-3 border border-slate-100 shadow-sm">
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="text-sm">📊</span>
-                                <h4 className="text-[11px] font-black text-slate-800">درصد انتخاب‌های فامیل</h4>
-                              </div>
-                              <div className="space-y-1.5">
-                                {championAnalytics.teams.map(item => (
-                                  <div key={item.team} className="space-y-0.5">
-                                    <div className="flex justify-between items-center text-[10px]">
-                                      <div className="flex items-center gap-1">
-                                        {getFlagUrl(item.team) ? (
-                                          <img src={getFlagUrl(item.team)} alt={item.team} className={`w-4 h-3 rounded object-cover transition-all duration-500 ${item.isEliminated && !item.isChampion ? 'grayscale opacity-40' : ''}`} />
-                                        ) : (
-                                          <span className="text-xs">🏳️</span>
-                                        )}
-                                        <span className={`font-bold ${item.isEliminated && !item.isChampion ? 'text-slate-400 line-through' : item.isChampion ? 'text-emerald-600' : 'text-[#00194C]'}`}>
-                                          {item.team}
-                                        </span>
-                                        {item.isUnderdog && item.isAlive && (
-                                          <span className="text-[7px] bg-amber-100 text-amber-600 px-1 rounded">🐺</span>
-                                        )}
-                                        {item.isEliminated && !item.isChampion && (
-                                          <span className="text-[7px] bg-red-100 text-red-500 px-1 rounded">❌</span>
-                                        )}
-                                        {item.isChampion && (
-                                          <span className="text-[7px] bg-emerald-100 text-emerald-600 px-1 rounded font-black">🏆</span>
-                                        )}
-                                      </div>
-                                      <span className="font-bold text-slate-500">{item.percentage}% ({item.count} نفر)</span>
-                                    </div>
-                                    <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                      <div 
-                                        className={`h-full rounded-full transition-all duration-700 ${item.isEliminated && !item.isChampion ? 'bg-slate-300' : item.isChampion ? 'bg-emerald-500' : 'bg-[#FDBA2D]'}`}
-                                        style={{ width: `${item.percentage}%` }}
-                                      />
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="bg-gradient-to-r from-[#FDBA2D]/20 to-[#F59E0B]/20 rounded-xl p-3 border border-[#FDBA2D]/30">
-                              <div className="flex items-center gap-1.5 mb-1">
-                                <span className="text-base">🎰</span>
-                                <span className="text-xs font-black text-[#00194C]">جایزه جکپات</span>
-                                <span className="text-[8px] bg-[#FDBA2D] text-[#00194C] px-1.5 py-0.5 rounded-full font-black">+{CHAMPION_BONUS_POINTS} امتیاز</span>
-                              </div>
-                              {actualChampion && championAnalytics.correctPredictors.length > 0 ? (
-                                <p className="text-[10px] text-slate-600 font-medium">
-                                  🎉 {championAnalytics.correctPredictors.length} نفر {championAnalytics.correctPredictors.length === 1 ? 'شخص' : 'نفر'} موفق شدند {actualChampion} را درست پیش‌بینی کنند!
-                                </p>
-                              ) : actualChampion ? (
-                                <p className="text-[10px] text-rose-600 font-medium">
-                                  😔 هیچکس نتوانست {actualChampion} را پیش‌بینی کند!
-                                </p>
-                              ) : (
-                                <p className="text-[10px] text-slate-600 font-medium">
-                                  در انتظار مشخص شدن قهرمان...
-                                </p>
-                              )}
-                            </div>
-
-                            <button
-                              onClick={() => {
-                                setIsTourneyModalOpen(true);
-                                setTourneyTab('summary');
-                              }}
-                              className="w-full bg-[#00194C] text-white font-bold py-2 rounded-lg text-xs hover:bg-[#00194C]/90 transition-colors flex items-center justify-center gap-2"
-                            >
-                              <span>📊</span>
-                              <span>مشاهده آمار کامل جام در مرکز آنالیز</span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* تالار افتخارات */}
-        {!loading && activeUsers.length > 0 && (
-          <section>
-            <div className="flex items-center gap-2 mb-3 px-6">
-              <div className="w-7 h-7 rounded-lg bg-[#FFF7ED] text-[#F59E0B] flex justify-center items-center font-bold text-sm">🌟</div>
-              <h2 className="text-[#00194C] font-black text-lg">تالار افتخارات</h2>
-            </div>
+          <div className="relative overflow-x-auto pb-4 px-4 snap-x snap-mandatory" 
+               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
             
-            <div className="flex overflow-x-auto gap-4 pb-4 px-6 snap-x" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-              <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+            <div className="flex gap-4 w-max">
               
-              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-emerald-100 relative overflow-hidden">
-                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🎯</div>
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-500 flex justify-center items-center text-xl shrink-0">🎯</div>
-                  <div>
-                    <p className="text-slate-400 text-[11px] font-bold mb-1">تک‌تیرانداز فامیل</p>
-                    <h3 className="text-[#00194C] font-black text-sm">{sniper.first_name} {sniper.last_name || '-'}</h3>
-                    <p className="text-emerald-600 text-[10px] font-bold mt-1 bg-emerald-50 px-2 py-0.5 rounded-md inline-block">{sniper.threes} پیش‌بینی ۳ امتیازی</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-slate-200 relative overflow-hidden">
-                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🐢</div>
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex justify-center items-center text-xl shrink-0">🐢</div>
-                  <div>
-                    <p className="text-slate-400 text-[11px] font-bold mb-1">محتاط‌ترین (پادشاه ۱ امتیازی)</p>
-                    <h3 className="text-[#00194C] font-black text-sm">{cautious.first_name} {cautious.last_name || '-'}</h3>
-                    <p className="text-slate-600 text-[10px] font-bold mt-1 bg-slate-100 px-2 py-0.5 rounded-md inline-block">{cautious.ones} پیش‌بینی ۱ امتیازی</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-cyan-100 relative overflow-hidden">
-                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🤝</div>
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-500 flex justify-center items-center text-xl shrink-0">🤝</div>
-                  <div>
-                    <p className="text-slate-400 text-[11px] font-bold mb-1">صلح‌طلب فامیل</p>
-                    <h3 className="text-[#00194C] font-black text-sm">{peaceMaker.first_name} {peaceMaker.last_name || '-'}</h3>
-                    <p className="text-cyan-600 text-[10px] font-bold mt-1 bg-cyan-50 px-2 py-0.5 rounded-md inline-block">{peaceMaker.drawsPredicted} پیش‌بینی مساوی</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-orange-100 relative overflow-hidden">
-                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">⚽</div>
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex justify-center items-center text-xl shrink-0">⚽</div>
-                  <div>
-                    <p className="text-slate-400 text-[11px] font-bold mb-1">عاشق بازی‌های پرگل</p>
-                    <h3 className="text-[#00194C] font-black text-sm">{crazyStriker.first_name} {crazyStriker.last_name || '-'}</h3>
-                    <p className="text-orange-600 text-[10px] font-bold mt-1 bg-orange-50 px-2 py-0.5 rounded-md inline-block">میانگین حدس: {(crazyStriker.totalGoalsPredicted / crazyStriker.totalPreds || 0).toFixed(1)} گل در بازی</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-zinc-200 relative overflow-hidden">
-                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🚌</div>
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-zinc-100 text-zinc-500 flex justify-center items-center text-xl shrink-0">🚌</div>
-                  <div>
-                    <p className="text-slate-400 text-[11px] font-bold mb-1">دفاع اتوبوسی (مورینیو)</p>
-                    <h3 className="text-[#00194C] font-black text-sm">{busParker.first_name} {busParker.last_name || '-'}</h3>
-                    <p className="text-zinc-600 text-[10px] font-bold mt-1 bg-zinc-100 px-2 py-0.5 rounded-md inline-block">میانگین حدس: {(busParker.totalGoalsPredicted / busParker.totalPreds || 0).toFixed(1)} گل در بازی</p>
-                  </div>
-                </div>
-              </div>
-
-              {loneSurvivor?.first_name && (
-                <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-indigo-100 relative overflow-hidden">
-                  <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🐺</div>
-                  <div className="flex items-start gap-3 relative z-10">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-500 flex justify-center items-center text-xl shrink-0">🐺</div>
-                    <div>
-                      <p className="text-slate-400 text-[11px] font-bold mb-1">شکارچی شگفتی‌ها (تنها بازمانده)</p>
-                      <h3 className="text-[#00194C] font-black text-sm">{loneSurvivor.first_name} {loneSurvivor.last_name || '-'}</h3>
-                      <p className="text-indigo-600 text-[10px] font-bold mt-1 bg-indigo-50 px-2 py-0.5 rounded-md inline-block">دشت امتیاز از {surpriseMatch.home_team}-{surpriseMatch.away_team}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-blue-100 relative overflow-hidden">
-                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">⚖️</div>
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex justify-center items-center text-xl shrink-0">⚖️</div>
-                  <div>
-                    <p className="text-slate-400 text-[11px] font-bold mb-1">خدای تفاضل</p>
-                    <h3 className="text-[#00194C] font-black text-sm">{diffGod.first_name} {diffGod.last_name || '-'}</h3>
-                    <p className="text-blue-600 text-[10px] font-bold mt-1 bg-blue-50 px-2 py-0.5 rounded-md inline-block">{diffGod.twos} پیش‌بینی ۲ امتیازی</p>
-                  </div>
-                </div>
-              </div>
-
-              {varBlunder.first_name && (
-                <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-purple-100 relative overflow-hidden">
-                  <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🚨</div>
-                  <div className="flex items-start gap-3 relative z-10">
-                    <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex justify-center items-center text-xl shrink-0">🚨</div>
-                    <div>
-                      <p className="text-slate-400 text-[11px] font-bold mb-1">اتاق VAR (بزرگترین سوتی)</p>
-                      <h3 className="text-[#00194C] font-black text-sm">{varBlunder.first_name} {varBlunder.last_name || '-'}</h3>
-                      <p className="text-purple-600 text-[10px] font-bold mt-1 bg-purple-50 px-2 py-0.5 rounded-md inline-block" dir="ltr">
-                        حدس: {varBlunder.predStr} | واقعی: {varBlunder.actualStr}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {predictableMatch.home_team && (
-                <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-teal-100 relative overflow-hidden">
-                  <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🔮</div>
-                  <div className="flex items-start gap-3 relative z-10">
-                    <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-500 flex justify-center items-center text-xl shrink-0">🔮</div>
-                    <div>
-                      <p className="text-slate-400 text-[11px] font-bold mb-1">قابل پیش‌بینی‌ترین بازی</p>
-                      <h3 className="text-[#00194C] font-black text-sm">{predictableMatch.home_team} - {predictableMatch.away_team}</h3>
-                      <p className="text-teal-600 text-[10px] font-bold mt-1 bg-teal-50 px-2 py-0.5 rounded-md inline-block">میانگین امتیاز: {predictableMatch.avgPoints}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {surpriseMatch.home_team && (
-                <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-rose-100 relative overflow-hidden">
-                  <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🤯</div>
-                  <div className="flex items-start gap-3 relative z-10">
-                    <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex justify-center items-center text-xl shrink-0">🤯</div>
-                    <div>
-                      <p className="text-slate-400 text-[11px] font-bold mb-1">غیرقابل پیش‌بینی‌ترین بازی</p>
-                      <h3 className="text-[#00194C] font-black text-sm">{surpriseMatch.home_team} - {surpriseMatch.away_team}</h3>
-                      <p className="text-rose-600 text-[10px] font-bold mt-1 bg-rose-50 px-2 py-0.5 rounded-md inline-block">میانگین امتیاز: {surpriseMatch.avgPoints}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-slate-200 relative overflow-hidden">
-                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🤦‍♂️</div>
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex justify-center items-center text-xl shrink-0">🤦‍♂️</div>
-                  <div>
-                    <p className="text-slate-400 text-[11px] font-bold mb-1">بدشانس‌ترین (طلسم‌شده)</p>
-                    <h3 className="text-[#00194C] font-black text-sm">{unlucky.first_name} {unlucky.last_name || '-'}</h3>
-                    <p className="text-slate-600 text-[10px] font-bold mt-1 bg-slate-100 px-2 py-0.5 rounded-md inline-block">{unlucky.zeros} بازی با صفر امتیاز</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </section>
-        )}
-
-        <div className="px-6 space-y-8">
-          
-          {!loading && (
-            <section>
-              <button 
-                onClick={() => setShowDailyLeaderboard(!showDailyLeaderboard)}
-                className="w-full flex justify-between items-center bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-black py-4 px-5 rounded-[20px] shadow-[0_8px_20px_rgba(16,185,129,0.2)] hover:opacity-95 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xl bg-white/20 w-8 h-8 rounded-lg flex items-center justify-center">⚡</span>
-                  <span>رده‌بندی امتیازات امروز</span>
-                </div>
-                <span className="text-lg bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300">
-                  {showDailyLeaderboard ? '▲' : '▼'}
-                </span>
-              </button>
-
-              {showDailyLeaderboard && (
-                <div className="mt-4 bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,25,76,0.03)] border border-[#F1F5F9] p-4 space-y-3 transition-all duration-300">
-                  {dailyLeaderboard.length > 0 ? (
-                    dailyLeaderboard.map((person) => (
-                      <div key={'daily'+person.user_id} className={`flex justify-between items-center p-3 rounded-xl transition-all ${person.user_id === user.id ? 'bg-[#16A34A]/10 border border-[#16A34A]/30' : 'bg-[#F8FAFC]'}`}>
-                        <div className="flex items-center gap-3">
-                          <span className={`w-6 text-center font-black ${person.dailyRank === 1 ? 'text-[#16A34A] text-lg' : person.dailyRank === 2 ? 'text-slate-400' : 'text-slate-400'}`}>
-                            {person.dailyRank}
-                          </span>
-                          <span className={`font-bold text-sm ${person.user_id === user.id ? 'text-[#00194C]' : 'text-slate-700'}`}>
-                            {person.first_name} {person.last_name}
-                          </span>
-                        </div>
-                        <div className="font-black text-[#16A34A] shrink-0 mr-2 flex items-center gap-1">
-                          <span className="text-lg">+{person.todayPoints}</span>
-                          <span className="text-[10px] font-normal opacity-70">امتیاز</span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-6">
-                      <span className="text-2xl block mb-2">🤔</span>
-                      <p className="text-sm font-bold text-slate-400">هنوز کسی امروز امتیازی نگرفته است!</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </section>
-          )}
-
-          <section>
-            <div className="flex justify-between items-center mb-4">
-               <div className="flex items-center gap-2">
-                 <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#334770] flex justify-center items-center font-bold">🏆</div>
-                 <h2 className="text-[#00194C] font-black text-lg">جدول رده‌بندی کل</h2>
-               </div>
-               <button 
-                 onClick={() => setIsStatsTableModalOpen(true)} 
-                 className="flex items-center gap-1 bg-white border border-slate-200 text-slate-500 hover:text-[#00194C] hover:border-[#00194C] px-3 py-1.5 rounded-xl transition-all shadow-sm text-xs font-bold"
-                 title="جدول ریز امتیازات"
-               >
-                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                 </svg>
-                 ریز امتیازات
-               </button>
-            </div>
-            
-            <div className="bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,25,76,0.03)] border border-[#F1F5F9] p-4 space-y-3">
-              {displayedLeaderboard.map((person) => {
-                const userPredictionsCount = matches.filter(m => m.predictions?.some(p => p.user_id === person.user_id)).length;
-                const missedMatchesCount = pastMatchesBase.filter(m => !m.predictions?.some(p => p.user_id === person.user_id)).length;
-                const userProfile = allProfiles.find(p => p.id === person.user_id);
-                const isCorrectChampion = actualChampion && userProfile?.champion_prediction === actualChampion;
-
+              {rankedLeaderboard.filter(p => p.rank === 1).map((user) => {
+                const imageName = getImageName(user.first_name, user.last_name);
                 return (
-                  <div key={person.user_id} className={`flex justify-between items-center p-3 rounded-xl transition-all ${person.user_id === user.id ? 'bg-[#FDBA2D]/10 border border-[#FDBA2D]/30' : 'bg-[#F8FAFC]'}`}>
-                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                      <span className={`w-5 sm:w-6 text-center font-black shrink-0 ${person.rank === 1 ? 'text-[#FDBA2D] text-lg' : person.rank === 2 ? 'text-slate-400 text-base' : person.rank === 3 ? 'text-amber-700 text-base' : 'text-slate-400'}`}>
-                        {person.rank}
-                      </span>
-                      
-                      <div className="flex flex-col gap-1.5 min-w-0">
-                        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                          <span className={`font-bold text-[13px] sm:text-sm truncate ${person.user_id === user.id ? 'text-[#00194C]' : 'text-slate-700'}`}>
-                            {person.first_name} {person.last_name}
-                          </span>
-                          
-                          {isChampionDeadlinePassed && userProfile?.champion_prediction && (
-                            <div className={`flex items-center gap-1 px-1 py-0.5 rounded-md border shadow-sm shrink-0 ${isCorrectChampion ? 'bg-emerald-100 border-emerald-400' : eliminatedTeams.includes(userProfile.champion_prediction) ? 'bg-slate-100 border-slate-200 opacity-60' : 'bg-[#FDBA2D]/20 border-[#FDBA2D]/30'}`} 
-                                 title={`پیش‌بینی قهرمان: ${userProfile.champion_prediction}${isCorrectChampion ? ' ✅ درست!' : ''}${eliminatedTeams.includes(userProfile.champion_prediction) && !isCorrectChampion ? ' (حذف شده ❌)' : ''}`}>
-                              <span className="text-[9px]">{isCorrectChampion ? '🏆' : eliminatedTeams.includes(userProfile.champion_prediction) ? '❌' : '🏆'}</span>
-                              {getFlagUrl(userProfile.champion_prediction) ? (
-                                <img src={getFlagUrl(userProfile.champion_prediction)} alt={userProfile.champion_prediction} 
-                                     className={`w-3 h-2 sm:w-3.5 sm:h-2.5 rounded-[2px] object-cover transition-all duration-500 ${eliminatedTeams.includes(userProfile.champion_prediction) && !isCorrectChampion ? 'grayscale opacity-30' : ''}`} />
-                              ) : (
-                                <span className="w-3 h-2 sm:w-3.5 sm:h-2.5 flex items-center justify-center bg-white/50 rounded-[2px] text-[7px] font-black">❓</span>
-                              )}
-                              {isCorrectChampion && <span className="text-[8px] text-emerald-600 font-black">+{CHAMPION_BONUS_POINTS}</span>}
-                              {eliminatedTeams.includes(userProfile.champion_prediction) && !isCorrectChampion && <span className="text-[8px] text-red-400 font-bold line-through hidden sm:inline">حذف</span>}
+                  <div 
+                    key={user.user_id}
+                    className="snap-center w-[320px] sm:w-[380px] flex-shrink-0 scale-105 cursor-pointer"
+                    onClick={() => setFullStoryUser({ ...user, rank: 1, imageName })}
+                  >
+                    <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-[#FDBA2D] ring-4 ring-[#FDBA2D]/30 bg-gradient-to-b from-[#FDBA2D]/20 to-[#F59E0B]/10">
+                      <div className="relative aspect-[9/16] bg-black/5">
+                        <img 
+                          src={`/images/rank1-${imageName}.jpg`}
+                          alt={`${user.first_name} ${user.last_name}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = '/images/rank1-default.jpg';
+                          }}
+                        />
+                        
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#FDBA2D]/40 via-transparent to-transparent"></div>
+                        
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent">
+                          <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-3xl animate-bounce">👑</span>
+                              <span className="bg-[#FDBA2D] text-[#00194C] px-3 py-0.5 rounded-full text-xs font-black">
+                                🥇 رتبه ۱
+                              </span>
                             </div>
-                          )}
+                            <h3 className="text-2xl font-black">{user.first_name} {user.last_name}</h3>
+                            <div className="flex items-center gap-3 mt-1">
+                              <span className="text-base font-bold text-[#FDBA2D]">{user.total_points} امتیاز</span>
+                              {user.champion_prediction && (
+                                <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                                  🏆 {user.champion_prediction}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
-
-                        <span className="text-[9px] text-slate-500 font-medium bg-slate-200/50 px-1.5 py-0.5 rounded border border-slate-200 w-max truncate">
-                          ثبت: {userPredictionsCount} | غایب: {missedMatchesCount}
-                        </span>
+                        
+                        <div className="absolute -top-2 -right-2 text-5xl animate-pulse opacity-80">👑</div>
+                        
+                        <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
+                          <div className="w-12 h-1 bg-white/50 rounded-full"></div>
+                          <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                          <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                        </div>
                       </div>
                     </div>
-                    
-                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1.5 sm:gap-3 shrink-0 mr-2 pl-1">
-                      <div className="font-black text-[#00194C] text-left leading-none">
-                        {person.total_points} <span className="text-[9px] font-normal text-slate-400">امتیاز</span>
+                  </div>
+                );
+              })}
+
+              {rankedLeaderboard.filter(p => p.rank === 2).map((user) => {
+                const imageName = getImageName(user.first_name, user.last_name);
+                return (
+                  <div 
+                    key={user.user_id}
+                    className="snap-center w-[280px] sm:w-[340px] flex-shrink-0 cursor-pointer"
+                    onClick={() => setFullStoryUser({ ...user, rank: 2, imageName })}
+                  >
+                    <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-slate-400 bg-gradient-to-b from-slate-400/10 to-slate-500/5">
+                      <div className="relative aspect-[9/16] bg-black/5">
+                        <img 
+                          src={`/images/rank2-${imageName}.jpg`}
+                          alt={`${user.first_name} ${user.last_name}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = '/images/rank2-default.jpg';
+                          }}
+                        />
+                        
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
+                          <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-2xl">🥈</span>
+                              <span className="bg-slate-400/30 backdrop-blur-sm px-3 py-0.5 rounded-full text-xs font-bold">
+                                رتبه ۲
+                              </span>
+                            </div>
+                            <h3 className="text-xl font-black">{user.first_name} {user.last_name}</h3>
+                            <div className="flex items-center gap-3 mt-1">
+                              <span className="text-sm font-bold text-slate-200">{user.total_points} امتیاز</span>
+                              {user.champion_prediction && (
+                                <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                                  🏆 {user.champion_prediction}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
+                          <div className="w-12 h-1 bg-white/50 rounded-full"></div>
+                          <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                          <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                        </div>
                       </div>
-                      
-                      <div className="flex gap-1">
-                        <button onClick={() => openUserModal(person, 'history')} className="bg-slate-100 hover:bg-slate-200 text-slate-500 p-1.5 rounded-lg transition-colors" title="تاریخچه پیش‌بینی‌ها">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                        </button>
-                        <button onClick={() => openUserModal(person, 'analytics')} className="bg-slate-100 hover:bg-slate-200 text-slate-500 p-1.5 rounded-lg transition-colors" title="آنالیز عملکرد">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                        </button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {rankedLeaderboard.filter(p => p.rank === 3).map((user) => {
+                const imageName = getImageName(user.first_name, user.last_name);
+                return (
+                  <div 
+                    key={user.user_id}
+                    className="snap-center w-[280px] sm:w-[340px] flex-shrink-0 cursor-pointer"
+                    onClick={() => setFullStoryUser({ ...user, rank: 3, imageName })}
+                  >
+                    <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-700 bg-gradient-to-b from-amber-700/10 to-amber-800/5">
+                      <div className="relative aspect-[9/16] bg-black/5">
+                        <img 
+                          src={`/images/rank3-${imageName}.jpg`}
+                          alt={`${user.first_name} ${user.last_name}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = '/images/rank3-default.jpg';
+                          }}
+                        />
+                        
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
+                          <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-2xl">🥉</span>
+                              <span className="bg-amber-700/30 backdrop-blur-sm px-3 py-0.5 rounded-full text-xs font-bold">
+                                رتبه ۳
+                              </span>
+                            </div>
+                            <h3 className="text-xl font-black">{user.first_name} {user.last_name}</h3>
+                            <div className="flex items-center gap-3 mt-1">
+                              <span className="text-sm font-bold text-slate-200">{user.total_points} امتیاز</span>
+                              {user.champion_prediction && (
+                                <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                                  🏆 {user.champion_prediction}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
+                          <div className="w-12 h-1 bg-white/50 rounded-full"></div>
+                          <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                          <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 );
               })}
               
-              {rankedLeaderboard.length > 10 && (
-                <button
-                  onClick={() => setIsLeaderboardExpanded(!isLeaderboardExpanded)}
-                  className="w-full mt-2 py-3 text-sm font-bold text-slate-500 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors flex justify-center items-center gap-2"
+            </div>
+          </div>
+          
+          <div className="flex justify-center mt-3">
+            <button 
+              onClick={() => {
+                const container = document.querySelector('.overflow-x-auto');
+                if (container) {
+                  container.scrollTo({ left: 0, behavior: 'smooth' });
+                }
+              }}
+              className="text-[10px] text-slate-400 font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-slate-200 shadow-sm hover:bg-white transition-colors flex items-center gap-1"
+            >
+              <span>👈</span>
+              برای دیدن همه اسکرول کنید
+              <span>👉</span>
+            </button>
+          </div>
+        </section>
+      )}
+        
+      {/* ======================================================== */}
+      {/* سکشن پیش‌بینی قهرمان */}
+      {/* ======================================================== */}
+      {!loading && (
+        <section className="px-6 mt-6">
+          {championPrediction ? (
+            <div className="bg-gradient-to-r from-[#00194C] to-[#1e3a8a] rounded-[20px] p-5 shadow-lg relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-[#00194C]/20">
+              <div className="absolute right-0 top-0 opacity-10 text-8xl -mt-4 -mr-4 pointer-events-none">🏆</div>
+              
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center p-2 backdrop-blur-sm border border-white/20 shrink-0">
+                  {getFlagUrl(championPrediction) ? (
+                    <img src={getFlagUrl(championPrediction)} alt={championPrediction} className="w-full h-full object-cover rounded shadow-sm" />
+                  ) : (
+                    <span className="text-2xl">❓</span>
+                  )}
+                </div>
+                <div>
+                  <p className="text-white/70 text-[11px] font-bold mb-1">
+                    {isChampionDeadlinePassed ? 'پیش‌بینی نهایی شما برای قهرمان:' : 'پیش‌بینی شما برای قهرمان جام:'}
+                  </p>
+                  <h3 className="text-[#FDBA2D] font-black text-xl">{championPrediction}</h3>
+                </div>
+              </div>
+
+              {!isChampionDeadlinePassed && (
+                <button 
+                  onClick={() => setIsChampionModalOpen(true)}
+                  className="relative z-10 w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-4 py-2.5 rounded-xl text-xs transition-colors backdrop-blur-sm flex justify-center items-center gap-2"
                 >
-                  {isLeaderboardExpanded ? 'بستن جدول ▲' : `مشاهده همه (${rankedLeaderboard.length} نفر) ▼`}
+                  <span>ویرایش انتخاب</span>
+                  <span>✏️</span>
                 </button>
               )}
             </div>
-          </section>
-
-          <section>
-            <div className="flex justify-between items-end mb-4">
-               <div className="flex items-center gap-2">
-                 <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#F59E0B] flex justify-center items-center font-bold">⚽</div>
-                 <h2 className="text-[#00194C] font-black text-lg">مسابقات</h2>
-               </div>
-            </div>
-
-            <div className="mb-6 relative">
-              <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+          ) : (
+            !isChampionDeadlinePassed ? (
+              <div className="bg-gradient-to-r from-rose-500 to-rose-600 rounded-[20px] p-5 shadow-lg text-white flex flex-col sm:flex-row items-center justify-between animate-pulse">
+                  <div className="flex items-center gap-3 mb-3 sm:mb-0 w-full">
+                    <span className="text-4xl shrink-0">🚨</span>
+                    <div>
+                      <h3 className="font-black text-[15px]">فراموش نکنی قهرمان رو حدس بزنی!</h3>
+                      <p className="text-xs opacity-90 mt-1 leading-relaxed">فقط تا قبل از شروع بازی کانادا - مراکش وقت داری.</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setIsChampionModalOpen(true)} 
+                    className="bg-white text-rose-600 font-black px-5 py-3 rounded-xl text-xs whitespace-nowrap shadow-sm hover:scale-105 transition-transform w-full sm:w-auto"
+                  >
+                    انتخاب قهرمان 🏆
+                  </button>
               </div>
-              <input
-                type="text"
-                placeholder="جستجوی تیم (مثلاً: برزیل)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-slate-200 text-[#00194C] font-bold text-sm rounded-2xl py-3 pr-12 pl-4 focus:outline-none focus:ring-2 focus:ring-[#FDBA2D] focus:border-transparent transition-all shadow-sm placeholder:text-slate-300 placeholder:font-medium"
-              />
-            </div>
-            
-            {loading ? (
-              <div className="text-center text-[#FDBA2D] font-bold">در حال دریافت بازی‌ها...</div>
             ) : (
-              <div>
-                {pastMatchesBase.length > 0 && (
-                  <div className="mb-6">
-                    <button 
-                      onClick={() => setShowPastMatches(!showPastMatches)}
-                      className="w-full flex justify-between items-center bg-white border border-[#E2E8F0] text-[#334770] font-black py-4 px-5 rounded-[20px] shadow-sm hover:bg-[#F8FAFC] transition-all"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">🕰️</span>
-                        <span>بازی‌های گذشته ({filteredPastMatches.length})</span>
-                      </div>
-                      <span className="text-lg text-slate-400">{(showPastMatches || isSearching) ? '▲' : '▼'}</span>
-                    </button>
-                    
-                    {(showPastMatches || isSearching) && (
-                      <div className="mt-4 space-y-6 transition-all duration-300">
-                        {sortedFilteredPastMatches.length > 0 ? (
-                          sortedFilteredPastMatches.map(match => (
-                            <div key={match.id} className="relative bg-white rounded-[20px] shadow-sm border border-slate-100 overflow-hidden">
-                              <div className="absolute right-0 top-0 z-10">
-                                {renderPointsBadge(match)}
-                              </div>
-                              <div className="pt-2">
-                                <MatchCard match={match} userId={user.id} userPrediction={getUserPrediction(match)} isAdmin={isAdmin} onTeamClick={handleOpenTeamHistory} />
+              <div className="bg-slate-200 rounded-[20px] p-5 border border-slate-300 flex items-center gap-3 shadow-sm">
+                  <span className="text-3xl grayscale">⏳</span>
+                  <div>
+                    <h3 className="font-black text-slate-600 text-sm">مهلت پیش‌بینی قهرمان تمام شد</h3>
+                    <p className="text-[11px] text-slate-500 mt-1 font-bold">متاسفانه شما تیمی را انتخاب نکردید.</p>
+                  </div>
+              </div>
+            )
+          )}
+
+          {isChampionDeadlinePassed && (
+            <div className="mt-4">
+              <button 
+                onClick={() => setShowChampionAccordion(!showChampionAccordion)}
+                className="w-full flex justify-between items-center bg-white border border-slate-200 text-[#00194C] font-black py-3 px-4 rounded-xl shadow-sm hover:bg-slate-50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🕵️‍♂️</span>
+                  <span className="text-xs">مشاهده پیش‌بینی قهرمانِ فامیل</span>
+                </div>
+                <span className="text-slate-400 text-xs">{showChampionAccordion ? '▲ بستن' : '▼ باز کردن'}</span>
+              </button>
+
+              {showChampionAccordion && (
+                <div className="mt-2 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                  <div className="max-h-64 overflow-y-auto p-2 space-y-1 border-b border-slate-100" style={{ scrollbarWidth: 'thin' }}>
+                    {(() => {
+                      const championList = allProfiles
+                        .filter(p => p.champion_prediction)
+                        .map(p => {
+                          const userObj = leaderboard.find(l => l.user_id === p.id);
+                          const isEliminated = eliminatedTeams.includes(p.champion_prediction);
+                          const isCorrect = actualChampion && p.champion_prediction === actualChampion;
+                          return {
+                            ...p,
+                            first_name: userObj?.first_name || 'کاربر',
+                            last_name: userObj?.last_name || '',
+                            points: userObj?.total_points || 0,
+                            isEliminated,
+                            isCorrect
+                          };
+                        })
+                        .sort((a, b) => b.points - a.points);
+
+                      if (championList.length === 0) {
+                        return <div className="text-center text-xs text-slate-400 py-3 font-bold">کسی قهرمان را پیش‌بینی نکرده است!</div>;
+                      }
+
+                      return championList.map(item => (
+                        <div key={item.id} className={`flex justify-between items-center p-2.5 rounded-lg border ${item.id === user.id ? 'bg-[#FFF7ED] border-[#FDBA2D]/30' : 'bg-slate-50 border-slate-100'} ${item.isEliminated && !item.isCorrect ? 'opacity-50' : ''}`}>
+                          <span className="text-xs font-bold text-slate-700">
+                            {item.first_name} {item.last_name}
+                            {item.id === user.id && <span className="mr-2 text-[9px] bg-[#FDBA2D] text-[#00194C] px-1.5 py-0.5 rounded shadow-sm">شما</span>}
+                            {item.isEliminated && !item.isCorrect && <span className="mr-2 text-[9px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded">❌ حذف</span>}
+                            {item.isCorrect && <span className="mr-2 text-[9px] bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded font-black">🏆 +{CHAMPION_BONUS_POINTS} امتیاز</span>}
+                          </span>
+                          <div className={`flex items-center gap-2 bg-white px-2 py-1 rounded shadow-sm border ${item.isEliminated && !item.isCorrect ? 'border-slate-200' : item.isCorrect ? 'border-emerald-300' : 'border-slate-100'}`}>
+                            <span className={`text-[11px] font-black ${item.isEliminated && !item.isCorrect ? 'text-slate-400 line-through' : item.isCorrect ? 'text-emerald-600' : 'text-[#00194C]'}`}>
+                              {item.champion_prediction}
+                            </span>
+                            {getFlagUrl(item.champion_prediction) ? (
+                              <img src={getFlagUrl(item.champion_prediction)} alt={item.champion_prediction} 
+                                   className={`w-5 h-3.5 rounded-[2px] object-cover transition-all duration-500 ${item.isEliminated && !item.isCorrect ? 'grayscale opacity-30' : ''}`} />
+                            ) : (
+                              <span className="text-[10px]">❓</span>
+                            )}
+                            {item.isCorrect && <span className="text-[12px]">🏆</span>}
+                          </div>
+                        </div>
+                      ));
+                    })()}
+                  </div>
+
+                  {championAnalytics && (
+                    <div className="p-3 bg-gradient-to-b from-slate-50 to-white">
+                      <button 
+                        onClick={() => setShowChampionAnalytics(!showChampionAnalytics)}
+                        className="w-full flex justify-between items-center bg-[#00194C] text-white font-bold py-2.5 px-3 rounded-lg text-xs hover:bg-[#00194C]/90 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>📊</span>
+                          <span>آنالیز پیش‌بینی قهرمان</span>
+                          {actualChampion && (
+                            <span className="bg-emerald-500 text-[9px] px-1.5 py-0.5 rounded-full">قهرمان مشخص شد!</span>
+                          )}
+                        </div>
+                        <span>{showChampionAnalytics ? '▲' : '▼'}</span>
+                      </button>
+
+                      {showChampionAnalytics && (
+                        <div className="mt-3 space-y-3">
+                          {actualChampion && (
+                            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-3 text-white text-center shadow">
+                              <p className="text-[10px] font-bold opacity-90">🏆 قهرمان واقعی جام</p>
+                              <div className="flex items-center justify-center gap-2 mt-1">
+                                {getFlagUrl(actualChampion) ? (
+                                  <img src={getFlagUrl(actualChampion)} alt={actualChampion} className="w-7 h-5 rounded object-cover border border-white/30" />
+                                ) : (
+                                  <span className="text-xl">🏳️</span>
+                                )}
+                                <span className="text-lg font-black">{actualChampion}</span>
                               </div>
                             </div>
-                          ))
-                        ) : (
-                          <div className="text-center text-slate-400 py-4 font-bold text-sm bg-white rounded-[20px] border border-slate-100">
-                            نتیجه‌ای در بازی‌های گذشته یافت نشد!
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
+                          )}
 
-                <div className="space-y-4">
-                  {filteredUpcomingMatches.length > 0 ? (
-                    filteredUpcomingMatches.map(match => (
-                      <MatchCard key={match.id} match={match} userId={user.id} userPrediction={getUserPrediction(match)} isAdmin={isAdmin} onTeamClick={handleOpenTeamHistory} />
-                    ))
-                  ) : (
-                    <div className="text-center text-slate-400 py-4 font-bold text-sm bg-white rounded-[20px] border border-slate-100">
-                      {isSearching ? 'نتیجه‌ای در بازی‌های آینده یافت نشد!' : 'در حال حاضر بازی جدیدی برای پیش‌بینی وجود ندارد!'}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="bg-white rounded-xl p-2 border border-slate-100 text-center shadow-sm">
+                              <p className="text-[9px] font-bold text-slate-400">تعداد پیش‌بینی‌ها</p>
+                              <p className="text-lg font-black text-[#00194C]">{championAnalytics.totalPredictions}</p>
+                            </div>
+                            <div className="bg-white rounded-xl p-2 border border-slate-100 text-center shadow-sm">
+                              <p className="text-[9px] font-bold text-slate-400">بازماندگان 🏃</p>
+                              <p className="text-lg font-black text-emerald-500">{championAnalytics.aliveCount}</p>
+                            </div>
+                          </div>
+
+                          {championAnalytics.correctPredictors.length > 0 && (
+                            <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-3 border border-emerald-200">
+                              <div className="flex items-center gap-2 mb-1.5">
+                                <span className="text-base">🎯</span>
+                                <span className="text-xs font-black text-emerald-700">پیش‌بینی‌کنندگان درست!</span>
+                                <span className="text-[8px] bg-emerald-200 text-emerald-700 px-1.5 py-0.5 rounded-full font-bold">+{CHAMPION_BONUS_POINTS} امتیاز</span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {championAnalytics.correctPredictors.map(p => {
+                                  const userObj = leaderboard.find(l => l.user_id === p.id);
+                                  return (
+                                    <div key={p.id} className="flex items-center gap-0.5 bg-white px-2 py-1 rounded-lg shadow-sm border border-emerald-200">
+                                      <span className="text-xs font-bold text-emerald-600">🏆</span>
+                                      <span className="text-[10px] font-bold text-slate-700">{userObj?.first_name || 'کاربر'} {userObj?.last_name || ''}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {championAnalytics.underdogs.length > 0 && (
+                            <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-2.5 border border-amber-200">
+                              <div className="flex items-center gap-1.5 mb-1">
+                                <span className="text-base">🐺</span>
+                                <span className="text-[10px] font-black text-amber-700">گرگ‌های تنها</span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {championAnalytics.underdogs.map(underdog => (
+                                  <div key={underdog.team} className="flex items-center gap-0.5 bg-white px-1.5 py-0.5 rounded-lg shadow-sm border border-amber-200">
+                                    {getFlagUrl(underdog.team) ? (
+                                      <img src={getFlagUrl(underdog.team)} alt={underdog.team} className="w-4 h-3 rounded object-cover" />
+                                    ) : (
+                                      <span>🏳️</span>
+                                    )}
+                                    <span className="text-[9px] font-bold text-slate-700">{underdog.team}</span>
+                                    <span className="text-[7px] text-amber-500 font-black">(🦄)</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="bg-white rounded-xl p-3 border border-slate-100 shadow-sm">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-sm">📊</span>
+                              <h4 className="text-[11px] font-black text-slate-800">درصد انتخاب‌های فامیل</h4>
+                            </div>
+                            <div className="space-y-1.5">
+                              {championAnalytics.teams.map(item => (
+                                <div key={item.team} className="space-y-0.5">
+                                  <div className="flex justify-between items-center text-[10px]">
+                                    <div className="flex items-center gap-1">
+                                      {getFlagUrl(item.team) ? (
+                                        <img src={getFlagUrl(item.team)} alt={item.team} className={`w-4 h-3 rounded object-cover transition-all duration-500 ${item.isEliminated && !item.isChampion ? 'grayscale opacity-40' : ''}`} />
+                                      ) : (
+                                        <span className="text-xs">🏳️</span>
+                                      )}
+                                      <span className={`font-bold ${item.isEliminated && !item.isChampion ? 'text-slate-400 line-through' : item.isChampion ? 'text-emerald-600' : 'text-[#00194C]'}`}>
+                                        {item.team}
+                                      </span>
+                                      {item.isUnderdog && item.isAlive && (
+                                        <span className="text-[7px] bg-amber-100 text-amber-600 px-1 rounded">🐺</span>
+                                      )}
+                                      {item.isEliminated && !item.isChampion && (
+                                        <span className="text-[7px] bg-red-100 text-red-500 px-1 rounded">❌</span>
+                                      )}
+                                      {item.isChampion && (
+                                        <span className="text-[7px] bg-emerald-100 text-emerald-600 px-1 rounded font-black">🏆</span>
+                                      )}
+                                    </div>
+                                    <span className="font-bold text-slate-500">{item.percentage}% ({item.count} نفر)</span>
+                                  </div>
+                                  <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                    <div 
+                                      className={`h-full rounded-full transition-all duration-700 ${item.isEliminated && !item.isChampion ? 'bg-slate-300' : item.isChampion ? 'bg-emerald-500' : 'bg-[#FDBA2D]'}`}
+                                      style={{ width: `${item.percentage}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="bg-gradient-to-r from-[#FDBA2D]/20 to-[#F59E0B]/20 rounded-xl p-3 border border-[#FDBA2D]/30">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <span className="text-base">🎰</span>
+                              <span className="text-xs font-black text-[#00194C]">جایزه جکپات</span>
+                              <span className="text-[8px] bg-[#FDBA2D] text-[#00194C] px-1.5 py-0.5 rounded-full font-black">+{CHAMPION_BONUS_POINTS} امتیاز</span>
+                            </div>
+                            {actualChampion && championAnalytics.correctPredictors.length > 0 ? (
+                              <p className="text-[10px] text-slate-600 font-medium">
+                                🎉 {championAnalytics.correctPredictors.length} نفر {championAnalytics.correctPredictors.length === 1 ? 'شخص' : 'نفر'} موفق شدند {actualChampion} را درست پیش‌بینی کنند!
+                              </p>
+                            ) : actualChampion ? (
+                              <p className="text-[10px] text-rose-600 font-medium">
+                                😔 هیچکس نتوانست {actualChampion} را پیش‌بینی کند!
+                              </p>
+                            ) : (
+                              <p className="text-[10px] text-slate-600 font-medium">
+                                در انتظار مشخص شدن قهرمان...
+                              </p>
+                            )}
+                          </div>
+
+                          <button
+                            onClick={() => {
+                              setIsTourneyModalOpen(true);
+                              setTourneyTab('summary');
+                            }}
+                            className="w-full bg-[#00194C] text-white font-bold py-2 rounded-lg text-xs hover:bg-[#00194C]/90 transition-colors flex items-center justify-center gap-2"
+                          >
+                            <span>📊</span>
+                            <span>مشاهده آمار کامل جام در مرکز آنالیز</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
+              )}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* تالار افتخارات */}
+      {!loading && activeUsers.length > 0 && (
+        <section className="mt-8">
+          <div className="flex items-center gap-2 mb-3 px-6">
+            <div className="w-7 h-7 rounded-lg bg-[#FFF7ED] text-[#F59E0B] flex justify-center items-center font-bold text-sm">🌟</div>
+            <h2 className="text-[#00194C] font-black text-lg">تالار افتخارات</h2>
+          </div>
+          
+          <div className="flex overflow-x-auto gap-4 pb-4 px-6 snap-x" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+            
+            <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-emerald-100 relative overflow-hidden">
+              <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🎯</div>
+              <div className="flex items-start gap-3 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-500 flex justify-center items-center text-xl shrink-0">🎯</div>
+                <div>
+                  <p className="text-slate-400 text-[11px] font-bold mb-1">تک‌تیرانداز فامیل</p>
+                  <h3 className="text-[#00194C] font-black text-sm">{sniper.first_name} {sniper.last_name || '-'}</h3>
+                  <p className="text-emerald-600 text-[10px] font-bold mt-1 bg-emerald-50 px-2 py-0.5 rounded-md inline-block">{sniper.threes} پیش‌بینی ۳ امتیازی</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-slate-200 relative overflow-hidden">
+              <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🐢</div>
+              <div className="flex items-start gap-3 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex justify-center items-center text-xl shrink-0">🐢</div>
+                <div>
+                  <p className="text-slate-400 text-[11px] font-bold mb-1">محتاط‌ترین (پادشاه ۱ امتیازی)</p>
+                  <h3 className="text-[#00194C] font-black text-sm">{cautious.first_name} {cautious.last_name || '-'}</h3>
+                  <p className="text-slate-600 text-[10px] font-bold mt-1 bg-slate-100 px-2 py-0.5 rounded-md inline-block">{cautious.ones} پیش‌بینی ۱ امتیازی</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-cyan-100 relative overflow-hidden">
+              <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🤝</div>
+              <div className="flex items-start gap-3 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-500 flex justify-center items-center text-xl shrink-0">🤝</div>
+                <div>
+                  <p className="text-slate-400 text-[11px] font-bold mb-1">صلح‌طلب فامیل</p>
+                  <h3 className="text-[#00194C] font-black text-sm">{peaceMaker.first_name} {peaceMaker.last_name || '-'}</h3>
+                  <p className="text-cyan-600 text-[10px] font-bold mt-1 bg-cyan-50 px-2 py-0.5 rounded-md inline-block">{peaceMaker.drawsPredicted} پیش‌بینی مساوی</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-orange-100 relative overflow-hidden">
+              <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">⚽</div>
+              <div className="flex items-start gap-3 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex justify-center items-center text-xl shrink-0">⚽</div>
+                <div>
+                  <p className="text-slate-400 text-[11px] font-bold mb-1">عاشق بازی‌های پرگل</p>
+                  <h3 className="text-[#00194C] font-black text-sm">{crazyStriker.first_name} {crazyStriker.last_name || '-'}</h3>
+                  <p className="text-orange-600 text-[10px] font-bold mt-1 bg-orange-50 px-2 py-0.5 rounded-md inline-block">میانگین حدس: {(crazyStriker.totalGoalsPredicted / crazyStriker.totalPreds || 0).toFixed(1)} گل در بازی</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-zinc-200 relative overflow-hidden">
+              <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🚌</div>
+              <div className="flex items-start gap-3 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-zinc-100 text-zinc-500 flex justify-center items-center text-xl shrink-0">🚌</div>
+                <div>
+                  <p className="text-slate-400 text-[11px] font-bold mb-1">دفاع اتوبوسی (مورینیو)</p>
+                  <h3 className="text-[#00194C] font-black text-sm">{busParker.first_name} {busParker.last_name || '-'}</h3>
+                  <p className="text-zinc-600 text-[10px] font-bold mt-1 bg-zinc-100 px-2 py-0.5 rounded-md inline-block">میانگین حدس: {(busParker.totalGoalsPredicted / busParker.totalPreds || 0).toFixed(1)} گل در بازی</p>
+                </div>
+              </div>
+            </div>
+
+            {loneSurvivor?.first_name && (
+              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-indigo-100 relative overflow-hidden">
+                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🐺</div>
+                <div className="flex items-start gap-3 relative z-10">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-500 flex justify-center items-center text-xl shrink-0">🐺</div>
+                  <div>
+                    <p className="text-slate-400 text-[11px] font-bold mb-1">شکارچی شگفتی‌ها (تنها بازمانده)</p>
+                    <h3 className="text-[#00194C] font-black text-sm">{loneSurvivor.first_name} {loneSurvivor.last_name || '-'}</h3>
+                    <p className="text-indigo-600 text-[10px] font-bold mt-1 bg-indigo-50 px-2 py-0.5 rounded-md inline-block">دشت امتیاز از {surpriseMatch.home_team}-{surpriseMatch.away_team}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-blue-100 relative overflow-hidden">
+              <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">⚖️</div>
+              <div className="flex items-start gap-3 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex justify-center items-center text-xl shrink-0">⚖️</div>
+                <div>
+                  <p className="text-slate-400 text-[11px] font-bold mb-1">خدای تفاضل</p>
+                  <h3 className="text-[#00194C] font-black text-sm">{diffGod.first_name} {diffGod.last_name || '-'}</h3>
+                  <p className="text-blue-600 text-[10px] font-bold mt-1 bg-blue-50 px-2 py-0.5 rounded-md inline-block">{diffGod.twos} پیش‌بینی ۲ امتیازی</p>
+                </div>
+              </div>
+            </div>
+
+            {varBlunder.first_name && (
+              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-purple-100 relative overflow-hidden">
+                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🚨</div>
+                <div className="flex items-start gap-3 relative z-10">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex justify-center items-center text-xl shrink-0">🚨</div>
+                  <div>
+                    <p className="text-slate-400 text-[11px] font-bold mb-1">اتاق VAR (بزرگترین سوتی)</p>
+                    <h3 className="text-[#00194C] font-black text-sm">{varBlunder.first_name} {varBlunder.last_name || '-'}</h3>
+                    <p className="text-purple-600 text-[10px] font-bold mt-1 bg-purple-50 px-2 py-0.5 rounded-md inline-block" dir="ltr">
+                      حدس: {varBlunder.predStr} | واقعی: {varBlunder.actualStr}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {predictableMatch.home_team && (
+              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-teal-100 relative overflow-hidden">
+                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🔮</div>
+                <div className="flex items-start gap-3 relative z-10">
+                  <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-500 flex justify-center items-center text-xl shrink-0">🔮</div>
+                  <div>
+                    <p className="text-slate-400 text-[11px] font-bold mb-1">قابل پیش‌بینی‌ترین بازی</p>
+                    <h3 className="text-[#00194C] font-black text-sm">{predictableMatch.home_team} - {predictableMatch.away_team}</h3>
+                    <p className="text-teal-600 text-[10px] font-bold mt-1 bg-teal-50 px-2 py-0.5 rounded-md inline-block">میانگین امتیاز: {predictableMatch.avgPoints}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {surpriseMatch.home_team && (
+              <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-rose-100 relative overflow-hidden">
+                <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🤯</div>
+                <div className="flex items-start gap-3 relative z-10">
+                  <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex justify-center items-center text-xl shrink-0">🤯</div>
+                  <div>
+                    <p className="text-slate-400 text-[11px] font-bold mb-1">غیرقابل پیش‌بینی‌ترین بازی</p>
+                    <h3 className="text-[#00194C] font-black text-sm">{surpriseMatch.home_team} - {surpriseMatch.away_team}</h3>
+                    <p className="text-rose-600 text-[10px] font-bold mt-1 bg-rose-50 px-2 py-0.5 rounded-md inline-block">میانگین امتیاز: {surpriseMatch.avgPoints}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="snap-center min-w-[240px] bg-white rounded-[20px] p-4 shadow-sm border border-slate-200 relative overflow-hidden">
+              <div className="absolute -left-4 -bottom-4 text-6xl opacity-[0.04] z-0">🤦‍♂️</div>
+              <div className="flex items-start gap-3 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex justify-center items-center text-xl shrink-0">🤦‍♂️</div>
+                <div>
+                  <p className="text-slate-400 text-[11px] font-bold mb-1">بدشانس‌ترین (طلسم‌شده)</p>
+                  <h3 className="text-[#00194C] font-black text-sm">{unlucky.first_name} {unlucky.last_name || '-'}</h3>
+                  <p className="text-slate-600 text-[10px] font-bold mt-1 bg-slate-100 px-2 py-0.5 rounded-md inline-block">{unlucky.zeros} بازی با صفر امتیاز</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      )}
+
+      {/* بخش اصلی (جدول‌ها و بازی‌ها) */}
+      <div className="px-6 space-y-8 mt-4">
+        
+        {!loading && (
+          <section>
+            <button 
+              onClick={() => setShowDailyLeaderboard(!showDailyLeaderboard)}
+              className="w-full flex justify-between items-center bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-black py-4 px-5 rounded-[20px] shadow-[0_8px_20px_rgba(16,185,129,0.2)] hover:opacity-95 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xl bg-white/20 w-8 h-8 rounded-lg flex items-center justify-center">⚡</span>
+                <span>رده‌بندی امتیازات امروز</span>
+              </div>
+              <span className="text-lg bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300">
+                {showDailyLeaderboard ? '▲' : '▼'}
+              </span>
+            </button>
+
+            {showDailyLeaderboard && (
+              <div className="mt-4 bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,25,76,0.03)] border border-[#F1F5F9] p-4 space-y-3 transition-all duration-300">
+                {dailyLeaderboard.length > 0 ? (
+                  dailyLeaderboard.map((person) => (
+                    <div key={'daily'+person.user_id} className={`flex justify-between items-center p-3 rounded-xl transition-all ${person.user_id === user.id ? 'bg-[#16A34A]/10 border border-[#16A34A]/30' : 'bg-[#F8FAFC]'}`}>
+                      <div className="flex items-center gap-3">
+                        <span className={`w-6 text-center font-black ${person.dailyRank === 1 ? 'text-[#16A34A] text-lg' : person.dailyRank === 2 ? 'text-slate-400' : 'text-slate-400'}`}>
+                          {person.dailyRank}
+                        </span>
+                        <span className={`font-bold text-sm ${person.user_id === user.id ? 'text-[#00194C]' : 'text-slate-700'}`}>
+                          {person.first_name} {person.last_name}
+                        </span>
+                      </div>
+                      <div className="font-black text-[#16A34A] shrink-0 mr-2 flex items-center gap-1">
+                        <span className="text-lg">+{person.todayPoints}</span>
+                        <span className="text-[10px] font-normal opacity-70">امتیاز</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-6">
+                    <span className="text-2xl block mb-2">🤔</span>
+                    <p className="text-sm font-bold text-slate-400">هنوز کسی امروز امتیازی نگرفته است!</p>
+                  </div>
+                )}
               </div>
             )}
           </section>
+        )}
 
-        </div>
+        <section>
+          <div className="flex justify-between items-center mb-4">
+             <div className="flex items-center gap-2">
+               <div className="w-8 h-8 rounded-lg bg-[#EFF6FF] text-[#334770] flex justify-center items-center font-bold">🏆</div>
+               <h2 className="text-[#00194C] font-black text-lg">جدول رده‌بندی کل</h2>
+             </div>
+             <button 
+               onClick={() => setIsStatsTableModalOpen(true)} 
+               className="flex items-center gap-1 bg-white border border-slate-200 text-slate-500 hover:text-[#00194C] hover:border-[#00194C] px-3 py-1.5 rounded-xl transition-all shadow-sm text-xs font-bold"
+               title="جدول ریز امتیازات"
+             >
+               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+               </svg>
+               ریز امتیازات
+             </button>
+          </div>
+          
+          <div className="bg-white rounded-[20px] shadow-[0_4px_20px_rgba(0,25,76,0.03)] border border-[#F1F5F9] p-4 space-y-3">
+            {displayedLeaderboard.map((person) => {
+              const userPredictionsCount = matches.filter(m => m.predictions?.some(p => p.user_id === person.user_id)).length;
+              const missedMatchesCount = pastMatchesBase.filter(m => !m.predictions?.some(p => p.user_id === person.user_id)).length;
+              const userProfile = allProfiles.find(p => p.id === person.user_id);
+              const isCorrectChampion = actualChampion && userProfile?.champion_prediction === actualChampion;
+
+              return (
+                <div key={person.user_id} className={`flex justify-between items-center p-3 rounded-xl transition-all ${person.user_id === user.id ? 'bg-[#FDBA2D]/10 border border-[#FDBA2D]/30' : 'bg-[#F8FAFC]'}`}>
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <span className={`w-5 sm:w-6 text-center font-black shrink-0 ${person.rank === 1 ? 'text-[#FDBA2D] text-lg' : person.rank === 2 ? 'text-slate-400 text-base' : person.rank === 3 ? 'text-amber-700 text-base' : 'text-slate-400'}`}>
+                      {person.rank}
+                    </span>
+                    
+                    <div className="flex flex-col gap-1.5 min-w-0">
+                      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                        <span className={`font-bold text-[13px] sm:text-sm truncate ${person.user_id === user.id ? 'text-[#00194C]' : 'text-slate-700'}`}>
+                          {person.first_name} {person.last_name}
+                        </span>
+                        
+                        {isChampionDeadlinePassed && userProfile?.champion_prediction && (
+                          <div className={`flex items-center gap-1 px-1 py-0.5 rounded-md border shadow-sm shrink-0 ${isCorrectChampion ? 'bg-emerald-100 border-emerald-400' : eliminatedTeams.includes(userProfile.champion_prediction) ? 'bg-slate-100 border-slate-200 opacity-60' : 'bg-[#FDBA2D]/20 border-[#FDBA2D]/30'}`} 
+                               title={`پیش‌بینی قهرمان: ${userProfile.champion_prediction}${isCorrectChampion ? ' ✅ درست!' : ''}${eliminatedTeams.includes(userProfile.champion_prediction) && !isCorrectChampion ? ' (حذف شده ❌)' : ''}`}>
+                            <span className="text-[9px]">{isCorrectChampion ? '🏆' : eliminatedTeams.includes(userProfile.champion_prediction) ? '❌' : '🏆'}</span>
+                            {getFlagUrl(userProfile.champion_prediction) ? (
+                              <img src={getFlagUrl(userProfile.champion_prediction)} alt={userProfile.champion_prediction} 
+                                   className={`w-3 h-2 sm:w-3.5 sm:h-2.5 rounded-[2px] object-cover transition-all duration-500 ${eliminatedTeams.includes(userProfile.champion_prediction) && !isCorrectChampion ? 'grayscale opacity-30' : ''}`} />
+                            ) : (
+                              <span className="w-3 h-2 sm:w-3.5 sm:h-2.5 flex items-center justify-center bg-white/50 rounded-[2px] text-[7px] font-black">❓</span>
+                            )}
+                            {isCorrectChampion && <span className="text-[8px] text-emerald-600 font-black">+{CHAMPION_BONUS_POINTS}</span>}
+                            {eliminatedTeams.includes(userProfile.champion_prediction) && !isCorrectChampion && <span className="text-[8px] text-red-400 font-bold line-through hidden sm:inline">حذف</span>}
+                          </div>
+                        )}
+                      </div>
+
+                      <span className="text-[9px] text-slate-500 font-medium bg-slate-200/50 px-1.5 py-0.5 rounded border border-slate-200 w-max truncate">
+                        ثبت: {userPredictionsCount} | غایب: {missedMatchesCount}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1.5 sm:gap-3 shrink-0 mr-2 pl-1">
+                    <div className="font-black text-[#00194C] text-left leading-none">
+                      {person.total_points} <span className="text-[9px] font-normal text-slate-400">امتیاز</span>
+                    </div>
+                    
+                    <div className="flex gap-1">
+                      <button onClick={() => openUserModal(person, 'history')} className="bg-slate-100 hover:bg-slate-200 text-slate-500 p-1.5 rounded-lg transition-colors" title="تاریخچه پیش‌بینی‌ها">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                      </button>
+                      <button onClick={() => openUserModal(person, 'analytics')} className="bg-slate-100 hover:bg-slate-200 text-slate-500 p-1.5 rounded-lg transition-colors" title="آنالیز عملکرد">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            
+            {rankedLeaderboard.length > 10 && (
+              <button
+                onClick={() => setIsLeaderboardExpanded(!isLeaderboardExpanded)}
+                className="w-full mt-2 py-3 text-sm font-bold text-slate-500 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors flex justify-center items-center gap-2"
+              >
+                {isLeaderboardExpanded ? 'بستن جدول ▲' : `مشاهده همه (${rankedLeaderboard.length} نفر) ▼`}
+              </button>
+            )}
+          </div>
+        </section>
+
+        <section>
+          <div className="flex justify-between items-end mb-4">
+             <div className="flex items-center gap-2">
+               <div className="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#F59E0B] flex justify-center items-center font-bold">⚽</div>
+               <h2 className="text-[#00194C] font-black text-lg">مسابقات</h2>
+             </div>
+          </div>
+
+          <div className="mb-6 relative">
+            <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="جستجوی تیم (مثلاً: برزیل)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white border border-slate-200 text-[#00194C] font-bold text-sm rounded-2xl py-3 pr-12 pl-4 focus:outline-none focus:ring-2 focus:ring-[#FDBA2D] focus:border-transparent transition-all shadow-sm placeholder:text-slate-300 placeholder:font-medium"
+            />
+          </div>
+          
+          {loading ? (
+            <div className="text-center text-[#FDBA2D] font-bold">در حال دریافت بازی‌ها...</div>
+          ) : (
+            <div>
+              {pastMatchesBase.length > 0 && (
+                <div className="mb-6">
+                  <button 
+                    onClick={() => setShowPastMatches(!showPastMatches)}
+                    className="w-full flex justify-between items-center bg-white border border-[#E2E8F0] text-[#334770] font-black py-4 px-5 rounded-[20px] shadow-sm hover:bg-[#F8FAFC] transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🕰️</span>
+                      <span>بازی‌های گذشته ({filteredPastMatches.length})</span>
+                    </div>
+                    <span className="text-lg text-slate-400">{(showPastMatches || isSearching) ? '▲' : '▼'}</span>
+                  </button>
+                  
+                  {(showPastMatches || isSearching) && (
+                    <div className="mt-4 space-y-6 transition-all duration-300">
+                      {sortedFilteredPastMatches.length > 0 ? (
+                        sortedFilteredPastMatches.map(match => (
+                          <div key={match.id} className="relative bg-white rounded-[20px] shadow-sm border border-slate-100 overflow-hidden">
+                            <div className="absolute right-0 top-0 z-10">
+                              {renderPointsBadge(match)}
+                            </div>
+                            <div className="pt-2">
+                              <MatchCard match={match} userId={user.id} userPrediction={getUserPrediction(match)} isAdmin={isAdmin} onTeamClick={handleOpenTeamHistory} />
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center text-slate-400 py-4 font-bold text-sm bg-white rounded-[20px] border border-slate-100">
+                          نتیجه‌ای در بازی‌های گذشته یافت نشد!
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                {filteredUpcomingMatches.length > 0 ? (
+                  filteredUpcomingMatches.map(match => (
+                    <MatchCard key={match.id} match={match} userId={user.id} userPrediction={getUserPrediction(match)} isAdmin={isAdmin} onTeamClick={handleOpenTeamHistory} />
+                  ))
+                ) : (
+                  <div className="text-center text-slate-400 py-4 font-bold text-sm bg-white rounded-[20px] border border-slate-100">
+                    {isSearching ? 'نتیجه‌ای در بازی‌های آینده یافت نشد!' : 'در حال حاضر بازی جدیدی برای پیش‌بینی وجود ندارد!'}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </section>
       </div>
+
+      {/* ======================================================== */}
+      {/* دکمه‌های شناور و مودال‌ها (باید حتماً داخل div اصلی باشند) */}
+      {/* ======================================================== */}
 
       <button 
         onClick={() => setIsTourneyModalOpen(true)}
@@ -2048,7 +2050,7 @@ export default function Dashboard({ user, onLogout }) {
         );
       })()}
 
-            {isModalOpen && selectedUser && (
+      {isModalOpen && selectedUser && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-[#00194C]/60 backdrop-blur-sm animate-fade-in">
           <div className="bg-white w-full max-w-sm rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             <div className="bg-[#00194C] p-6 text-center relative shrink-0">
@@ -2352,6 +2354,7 @@ export default function Dashboard({ user, onLogout }) {
           </div>
         </div>
       )}
+      
     </div>
   );
 }
