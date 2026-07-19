@@ -29,13 +29,38 @@ const getFlagUrl = (teamName) => {
   return code ? `https://flagcdn.com/w40/${code}.png` : null;
 };
 
+// ============================================================
+// ✅ اینجا تابع getImageName رو اضافه کن
+// ============================================================
+const getImageName = (firstName, lastName) => {
+  const key = `${firstName} ${lastName}`.trim();
+  
+  const nameMap = {
+    // اسامی انگلیسی
+    'Behnia Zamani': 'behnia-zamani',
+    'Mojgan Naghavi': 'mojgan-naghavi',
+    'Payam Naghavi': 'payam-naghavi',
+    'Mohammad Amiri': 'mohammad-amiri',
+    'Aria Yaghmaie': 'arya-yaghmaie',
+    
+    // اسامی فارسی
+    'پویان یغمائیان': 'pooyan-yaghmaian',
+    'آریا یغمائی': 'arya-yaghmaie',
+    'محمد امیری': 'mohammad-amiri',
+    'پیام نقوی': 'payam-naghavi',
+    'مژگان نقوی': 'mojgan-naghavi',
+    'بهنیا زمانی': 'behnia-zamani',
+  };
+  
+  return nameMap[key] || key.replace(/ /g, '-').toLowerCase();
+};
+
 // لیست تیم‌های حاضر در مرحله حذفی
 const knockoutTeams = [
   'کانادا', 'مراکش', 'پاراگوئه', 'فرانسه', 'برزیل', 'نروژ', 
   'مکزیک', 'انگلیس', 'پرتغال', 'اسپانیا', 'آمریکا', 'بلژیک', 
   'مصر', 'سوئیس', 'آرژانتین', 'کلمبیا'
 ];
-
 // جایزه پیش‌بینی قهرمان
 const CHAMPION_BONUS_POINTS = 5;
 
@@ -79,8 +104,9 @@ export default function Dashboard({ user, onLogout }) {
   const [actualChampion, setActualChampion] = useState(null);
 
   // استیت‌های Wrapped
-  const [showWrapped, setShowWrapped] = useState(false);
-  const [hasSeenWrapped, setHasSeenWrapped] = useState(false);
+  const [showWrapped, setShowWrapped] = useState(null);
+  const [hasSeenWrapped, setHasSeenWrapped] = useState(null);
+  const [fullStoryUser, setFullStoryUser] = useState(null);
 
   // ددلاین قهرمان: شنبه ۱۳ تیر ۱۴۰۵ ساعت ۲۰:۳۰ ایران (17:00 UTC)
   const [nowTime, setNowTime] = useState(new Date());
@@ -810,8 +836,216 @@ export default function Dashboard({ user, onLogout }) {
           </div>
         </div>
       </div>
+{/* ======================================================== */}
+{/* 📱 سکوهای قهرمانی - استوری اینستاگرام */}
+{/* ======================================================== */}
+{!loading && rankedLeaderboard.length >= 3 && (
+  <section className="px-0 -mt-6 relative z-20">
+    {/* هدر استوری */}
+    <div className="flex items-center justify-between px-4 mb-3">
+      <div className="flex items-center gap-2">
+        <span className="text-2xl">🏆</span>
+        <h2 className="text-[#00194C] font-black text-base">سکوهای قهرمانی</h2>
+        <span className="text-[10px] bg-[#FDBA2D] text-[#00194C] font-black px-2 py-0.5 rounded-full">🔥 برترین‌ها</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <span className="text-[10px] text-slate-400 font-bold">برای دیدن استوری ضربه بزنید</span>
+        <span className="text-lg">👆</span>
+      </div>
+    </div>
 
-      <div className="mt-16 space-y-8">
+    {/* اسلایدر استوری */}
+    <div className="relative overflow-x-auto pb-4 px-4 snap-x snap-mandatory" 
+         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+      
+      <div className="flex gap-4 w-max">
+        
+        {/* ============================================================ */}
+        {/* 🥇 رتبه اول - همه افراد با rank === 1 */}
+        {/* ============================================================ */}
+        {rankedLeaderboard.filter(p => p.rank === 1).map((user) => {
+          const imageName = getImageName(user.first_name, user.last_name);
+          return (
+            <div 
+              key={user.user_id}
+              className="snap-center w-[320px] sm:w-[380px] flex-shrink-0 scale-105 cursor-pointer"
+              onClick={() => setFullStoryUser({ ...user, rank: 1, imageName })}
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-[#FDBA2D] ring-4 ring-[#FDBA2D]/30 bg-gradient-to-b from-[#FDBA2D]/20 to-[#F59E0B]/10">
+                <div className="relative aspect-[9/16] bg-black/5">
+                  <img 
+                    src={`/images/rank1-${imageName}.jpg`}
+                    alt={`${user.first_name} ${user.last_name}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = '/images/rank1-default.jpg';
+                    }}
+                  />
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#FDBA2D]/40 via-transparent to-transparent"></div>
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent">
+                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-3xl animate-bounce">👑</span>
+                        <span className="bg-[#FDBA2D] text-[#00194C] px-3 py-0.5 rounded-full text-xs font-black">
+                          🥇 رتبه ۱
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-black">{user.first_name} {user.last_name}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-base font-bold text-[#FDBA2D]">{user.total_points} امتیاز</span>
+                        {user.champion_prediction && (
+                          <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                            🏆 {user.champion_prediction}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="absolute -top-2 -right-2 text-5xl animate-pulse opacity-80">👑</div>
+                  
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="w-12 h-1 bg-white/50 rounded-full"></div>
+                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* ============================================================ */}
+        {/* 🥈 رتبه دوم - همه افراد با rank === 2 */}
+        {/* ============================================================ */}
+        {rankedLeaderboard.filter(p => p.rank === 2).map((user) => {
+          const imageName = getImageName(user.first_name, user.last_name);
+          return (
+            <div 
+              key={user.user_id}
+              className="snap-center w-[280px] sm:w-[340px] flex-shrink-0 cursor-pointer"
+              onClick={() => setFullStoryUser({ ...user, rank: 2, imageName })}
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-slate-400 bg-gradient-to-b from-slate-400/10 to-slate-500/5">
+                <div className="relative aspect-[9/16] bg-black/5">
+                  <img 
+                    src={`/images/rank2-${imageName}.jpg`}
+                    alt={`${user.first_name} ${user.last_name}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = '/images/rank2-default.jpg';
+                    }}
+                  />
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
+                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-2xl">🥈</span>
+                        <span className="bg-slate-400/30 backdrop-blur-sm px-3 py-0.5 rounded-full text-xs font-bold">
+                          رتبه ۲
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-black">{user.first_name} {user.last_name}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-sm font-bold text-slate-200">{user.total_points} امتیاز</span>
+                        {user.champion_prediction && (
+                          <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                            🏆 {user.champion_prediction}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="w-12 h-1 bg-white/50 rounded-full"></div>
+                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* ============================================================ */}
+        {/* 🥉 رتبه سوم - همه افراد با rank === 3 */}
+        {/* ============================================================ */}
+        {rankedLeaderboard.filter(p => p.rank === 3).map((user) => {
+          const imageName = getImageName(user.first_name, user.last_name);
+          return (
+            <div 
+              key={user.user_id}
+              className="snap-center w-[280px] sm:w-[340px] flex-shrink-0 cursor-pointer"
+              onClick={() => setFullStoryUser({ ...user, rank: 3, imageName })}
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-700 bg-gradient-to-b from-amber-700/10 to-amber-800/5">
+                <div className="relative aspect-[9/16] bg-black/5">
+                  <img 
+                    src={`/images/rank3-${imageName}.jpg`}
+                    alt={`${user.first_name} ${user.last_name}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = '/images/rank3-default.jpg';
+                    }}
+                  />
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
+                    <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-2xl">🥉</span>
+                        <span className="bg-amber-700/30 backdrop-blur-sm px-3 py-0.5 rounded-full text-xs font-bold">
+                          رتبه ۳
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-black">{user.first_name} {user.last_name}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-sm font-bold text-slate-200">{user.total_points} امتیاز</span>
+                        {user.champion_prediction && (
+                          <span className="text-[10px] bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                            🏆 {user.champion_prediction}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="w-12 h-1 bg-white/50 rounded-full"></div>
+                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                    <div className="w-12 h-1 bg-white/30 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        
+      </div>
+    </div>
+    
+    {/* دکمه اسکرول */}
+    <div className="flex justify-center mt-3">
+      <button 
+        onClick={() => {
+          const container = document.querySelector('.overflow-x-auto');
+          if (container) {
+            container.scrollTo({ left: 0, behavior: 'smooth' });
+          }
+        }}
+        className="text-[10px] text-slate-400 font-bold bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-slate-200 shadow-sm hover:bg-white transition-colors flex items-center gap-1"
+      >
+        <span>👈</span>
+        برای دیدن همه اسکرول کنید
+        <span>👉</span>
+      </button>
+    </div>
+  </section>
+)}
+       {/* ✅ مودال Wrapped - برای همه کاربران */}
         
         {/* ======================================================== */}
         {/* سکشن پیش‌بینی قهرمان */}
@@ -2131,7 +2365,7 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       )}
 
-      {/* ✅ مودال Wrapped - برای همه کاربران */}
+            {/* ✅ مودال Wrapped - برای همه کاربران */}
       {showWrapped && (
         <WrappedModal
           isOpen={showWrapped}
@@ -2143,6 +2377,52 @@ export default function Dashboard({ user, onLogout }) {
           leaderboard={leaderboard}
         />
       )}
+
+      {/* ======================================================== */}
+      {/* ✅ مودال استوری تمام صفحه */}
+      {/* ======================================================== */}
+      {fullStoryUser && (
+        <div 
+          className="fixed inset-0 z-[999] bg-black flex items-center justify-center"
+          onClick={() => setFullStoryUser(null)}
+        >
+          <div className="relative w-full max-w-md h-full max-h-[800px]">
+            <img 
+              src={`/images/rank${fullStoryUser.rank}-${fullStoryUser.imageName}.jpg`}
+              alt={`${fullStoryUser.first_name} ${fullStoryUser.last_name}`}
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                e.target.src = `/images/rank${fullStoryUser.rank}-default.jpg`;
+              }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-2xl">
+                  {fullStoryUser.rank === 1 ? '👑' : fullStoryUser.rank === 2 ? '🥈' : '🥉'}
+                </span>
+                <span className={`text-sm font-bold ${fullStoryUser.rank === 1 ? 'text-[#FDBA2D]' : 'text-white/70'}`}>
+                  رتبه {fullStoryUser.rank}
+                </span>
+              </div>
+              <h2 className="text-2xl font-black">{fullStoryUser.first_name} {fullStoryUser.last_name}</h2>
+              <p className={`text-lg font-bold ${fullStoryUser.rank === 1 ? 'text-[#FDBA2D]' : 'text-white/80'}`}>
+                {fullStoryUser.total_points} امتیاز
+              </p>
+              {fullStoryUser.champion_prediction && (
+                <p className="text-sm text-white/60 mt-1">
+                  🏆 پیش‌بینی قهرمان: {fullStoryUser.champion_prediction}
+                </p>
+              )}
+            </div>
+            <button 
+              className="absolute top-4 right-4 text-white/50 hover:text-white text-2xl w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm"
+              onClick={() => setFullStoryUser(null)}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+}  
