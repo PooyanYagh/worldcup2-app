@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+/* لود کردن فونت وزیرمتن به عنوان فونت پشتیبان */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap');
+
+/* -------------------------------------------------
+  تعریف فونت دانا با فرمت TTF
+  -------------------------------------------------
+*/
+
+@font-face {
+  font-family: 'Dana-FaNum';
+  src: url('/fonts/dana-fanum-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Dana-FaNum';
+  src: url('/fonts/dana-fanum-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Dana-FaNum';
+  src: url('/fonts/dana-fanum-black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Dana-FaNum', 'Dana', 'Vazirmatn', Tahoma, sans-serif;
+  direction: rtl;
+  background-color: #F8FAFC;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* حذف فلش‌های بالا و پایین از اینپوت‌های عددی */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
