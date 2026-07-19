@@ -30,20 +30,17 @@ const getFlagUrl = (teamName) => {
 };
 
 // ============================================================
-// ✅ اینجا تابع getImageName رو اضافه کن
+// ✅ تابع getImageName
 // ============================================================
 const getImageName = (firstName, lastName) => {
   const key = `${firstName} ${lastName}`.trim();
   
   const nameMap = {
-    // اسامی انگلیسی
     'Behnia Zamani': 'behnia-zamani',
     'Mojgan Naghavi': 'mojgan-naghavi',
     'Payam Naghavi': 'payam-naghavi',
     'Mohammad Amiri': 'mohammad-amiri',
     'Aria Yaghmaie': 'arya-yaghmaie',
-    
-    // اسامی فارسی
     'پویان یغمائیان': 'pooyan-yaghmaian',
     'آریا یغمائی': 'arya-yaghmaie',
     'محمد امیری': 'mohammad-amiri',
@@ -55,13 +52,12 @@ const getImageName = (firstName, lastName) => {
   return nameMap[key] || key.replace(/ /g, '-').toLowerCase();
 };
 
-// لیست تیم‌های حاضر در مرحله حذفی
 const knockoutTeams = [
   'کانادا', 'مراکش', 'پاراگوئه', 'فرانسه', 'برزیل', 'نروژ', 
   'مکزیک', 'انگلیس', 'پرتغال', 'اسپانیا', 'آمریکا', 'بلژیک', 
   'مصر', 'سوئیس', 'آرژانتین', 'کلمبیا'
 ];
-// جایزه پیش‌بینی قهرمان
+
 const CHAMPION_BONUS_POINTS = 5;
 
 export default function Dashboard({ user, onLogout }) {
@@ -90,7 +86,6 @@ export default function Dashboard({ user, onLogout }) {
 
   const [isStatsTableModalOpen, setIsStatsTableModalOpen] = useState(false);
 
-  // استیت‌های پیش‌بینی قهرمان
   const [championPrediction, setChampionPrediction] = useState('');
   const [allProfiles, setAllProfiles] = useState([]);
   const [isChampionModalOpen, setIsChampionModalOpen] = useState(false);
@@ -98,38 +93,22 @@ export default function Dashboard({ user, onLogout }) {
   const [showChampionAccordion, setShowChampionAccordion] = useState(false);
   const [showChampionAnalytics, setShowChampionAnalytics] = useState(false);
 
-  // استیت‌های آنالیز قهرمان
   const [championAnalytics, setChampionAnalytics] = useState(null);
   const [eliminatedTeams, setEliminatedTeams] = useState([]);
   const [actualChampion, setActualChampion] = useState(null);
 
-  // استیت‌های Wrapped
   const [showWrapped, setShowWrapped] = useState(null);
   const [hasSeenWrapped, setHasSeenWrapped] = useState(null);
   const [fullStoryUser, setFullStoryUser] = useState(null);
 
-  // ددلاین قهرمان: شنبه ۱۳ تیر ۱۴۰۵ ساعت ۲۰:۳۰ ایران (17:00 UTC)
   const [nowTime, setNowTime] = useState(new Date());
   const CHAMPION_DEADLINE = new Date('2026-07-04T17:00:00Z');
   const isChampionDeadlinePassed = nowTime > CHAMPION_DEADLINE;
 
-  // تاریخ آخرین بازی: ۲۸ تیر ۱۴۰۵ (2026-07-19)
   const LAST_MATCH_DATE = new Date('2026-07-19T23:59:59Z');
 
   const isAdmin = (user.first_name === 'پویان' && user.last_name === 'یغمائیان') || (user.first_name === 'Behnia' && user.last_name === 'Zamani');
 
-  // ============================================================
-  // ✅ useEffect اولیه - دریافت داده‌ها و تایمر
-  // ============================================================
-  useEffect(() => {
-    fetchData();
-    const timer = setInterval(() => setNowTime(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // ============================================================
-  // ✅ fetchData با مدیریت خطا (try/catch)
-  // ============================================================
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -173,21 +152,20 @@ export default function Dashboard({ user, onLogout }) {
     }
   };
 
-  // ============================================================
-  // ✅ بررسی نمایش Wrapped - اصلاح شده برای نمایش به همه کاربران
-  // ============================================================
+  useEffect(() => {
+    fetchData();
+    const timer = setInterval(() => setNowTime(new Date()), 60000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (!loading && matches.length > 0 && user) {
-      // کاربر تست
       const isTestUser = user.id === '23783761-4ad5-442f-8413-7498d510b552';
-      
-      // چک کن همه بازی‌ها تموم شده
       const allFinished = matches.every(m => m.home_score !== null && m.away_score !== null);
       const wrappedKey = `wrapped_seen_${user.id}`;
       const hasWrapped = localStorage.getItem(wrappedKey) === 'true';
       
-      // ✅ حذف محدودیت ادمین - همه کاربران می‌توانند Wrapped را ببینند
-      // شرط نمایش: یا کاربر تست هست یا همه بازی‌ها تموم شده
       const shouldShowWrapped = isTestUser || allFinished;
       
       if (shouldShowWrapped && !hasWrapped) {
@@ -200,17 +178,7 @@ export default function Dashboard({ user, onLogout }) {
     }
   }, [loading, matches, user]);
 
-  // ============================================================
-  // ✅ محاسبه آنالیز قهرمان
-  // ============================================================
-  useEffect(() => {
-    if (isChampionDeadlinePassed && allProfiles.length > 0 && matches.length > 0) {
-      calculateChampionAnalytics();
-    }
-  }, [isChampionDeadlinePassed, allProfiles, matches]);
-
   const calculateChampionAnalytics = () => {
-    // 1. پیدا کردن قهرمان واقعی
     const aliveTeams = new Set(knockoutTeams);
     const finishedKnockoutMatches = matches.filter(m => 
       m.home_score !== null && 
@@ -230,7 +198,6 @@ export default function Dashboard({ user, onLogout }) {
     const champion = aliveTeams.size === 1 ? [...aliveTeams][0] : null;
     setActualChampion(champion);
 
-    // 2. لیست تیم‌های حذف شده
     const eliminated = new Set();
     finishedKnockoutMatches.forEach(m => {
       const loser = m.home_score > m.away_score ? m.away_team : m.home_score < m.away_score ? m.home_team : null;
@@ -240,7 +207,6 @@ export default function Dashboard({ user, onLogout }) {
     });
     setEliminatedTeams([...eliminated]);
 
-    // 3. آمار انتخاب‌ها
     const predictions = allProfiles.filter(p => p.champion_prediction);
     const totalPredictions = predictions.length;
     
@@ -252,7 +218,6 @@ export default function Dashboard({ user, onLogout }) {
       }
     });
 
-    // 4. محاسبه درصدها
     const analyticsData = Object.keys(teamCounts).map(team => ({
       team,
       count: teamCounts[team],
@@ -281,6 +246,13 @@ export default function Dashboard({ user, onLogout }) {
     });
   };
 
+  useEffect(() => {
+    if (isChampionDeadlinePassed && allProfiles.length > 0 && matches.length > 0) {
+      calculateChampionAnalytics();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChampionDeadlinePassed, allProfiles, matches]);
+
   const handleSaveChampion = async (team) => {
     if (isChampionDeadlinePassed) {
       alert('فرصت پیش‌بینی قهرمان به پایان رسیده است!');
@@ -307,9 +279,6 @@ export default function Dashboard({ user, onLogout }) {
   const getUserPrediction = (match) => match.predictions?.find(p => p.user_id === user.id);
   const myPoints = leaderboard.find(p => p.user_id === user.id)?.total_points || 0;
 
-  // ============================================================
-  // ✅ بررسی برف‌شادی با cleanup صحیح
-  // ============================================================
   useEffect(() => {
     if (!loading && matches.length > 0) {
       const todayStr = new Date().toDateString();
@@ -341,12 +310,9 @@ export default function Dashboard({ user, onLogout }) {
     }
   }, [loading, matches, user.id]);
 
-  // ============================================================
-  // ✅ رتبه‌بندی با Dense Ranking
-  // ============================================================
   let currentRank = 1;
   let previousPoints = null;
-  const rankedLeaderboard = leaderboard.map((person, index) => {
+  const rankedLeaderboard = leaderboard.map((person) => {
     if (previousPoints !== null && person.total_points < previousPoints) {
       currentRank++;
     }
@@ -370,9 +336,6 @@ export default function Dashboard({ user, onLogout }) {
   );
   const sortedFilteredPastMatches = [...filteredPastMatches].reverse();
 
-  // ============================================================
-  // ✅ محاسبه آمار کاربران با مقداردهی اولیه ایمن
-  // ============================================================
   let userStats = leaderboard.map(u => {
     const userPastPredsCount = pastMatchesBase.filter(m => m.predictions?.some(p => p.user_id === u.user_id)).length;
     return { 
@@ -426,9 +389,6 @@ export default function Dashboard({ user, onLogout }) {
 
   const activeUsers = userStats.filter(u => u.totalPreds > 0);
 
-  // ============================================================
-  // ✅ محاسبه تالار افتخارات با چک کردن آرایه‌های خالی
-  // ============================================================
   const sniper = activeUsers.length > 0 ? [...activeUsers].sort((a, b) => b.threes - a.threes)[0] : {};
   const diffGod = activeUsers.length > 0 ? [...activeUsers].sort((a, b) => b.twos - a.twos)[0] : {};
   const unlucky = activeUsers.length > 0 ? [...activeUsers].sort((a, b) => b.zeros - a.zeros)[0] : {};
@@ -790,9 +750,6 @@ export default function Dashboard({ user, onLogout }) {
     };
   }
 
-  // ============================================================
-  // ✅ محاسبه ماکسیمم‌ها با چک کردن آرایه خالی
-  // ============================================================
   const maxThrees = userStats.length > 0 ? Math.max(...userStats.map(s => s.threes)) : 0;
   const maxTwos = userStats.length > 0 ? Math.max(...userStats.map(s => s.twos)) : 0;
   const maxOnes = userStats.length > 0 ? Math.max(...userStats.map(s => s.ones)) : 0;
@@ -804,7 +761,7 @@ export default function Dashboard({ user, onLogout }) {
       
       {showConfetti && (
         <div className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center">
-          <Confetti width={window.innerWidth} height={window.innerHeight} recycle={false} numberOfPieces={400} gravity={0.15} />
+          <Confetti width={typeof window !== 'undefined' ? window.innerWidth : 300} height={typeof window !== 'undefined' ? window.innerHeight : 800} recycle={false} numberOfPieces={400} gravity={0.15} />
           <div className="bg-white/95 px-8 py-6 rounded-3xl shadow-2xl text-center animate-bounce mt-[-100px] border-2 border-emerald-400">
             <span className="text-5xl block mb-3">🎯🔥</span>
             <h2 className="text-2xl font-black text-[#00194C]">ایـول تک‌تیرانـداز!</h2>
@@ -841,7 +798,6 @@ export default function Dashboard({ user, onLogout }) {
 {/* ======================================================== */}
 {!loading && rankedLeaderboard.length >= 3 && (
   <section className="px-0 -mt-6 relative z-20">
-    {/* هدر استوری */}
     <div className="flex items-center justify-between px-4 mb-3">
       <div className="flex items-center gap-2">
         <span className="text-2xl">🏆</span>
@@ -854,16 +810,12 @@ export default function Dashboard({ user, onLogout }) {
       </div>
     </div>
 
-    {/* اسلایدر استوری */}
     <div className="relative overflow-x-auto pb-4 px-4 snap-x snap-mandatory" 
          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
       <style>{`div::-webkit-scrollbar { display: none; }`}</style>
       
       <div className="flex gap-4 w-max">
         
-        {/* ============================================================ */}
-        {/* 🥇 رتبه اول - همه افراد با rank === 1 */}
-        {/* ============================================================ */}
         {rankedLeaderboard.filter(p => p.rank === 1).map((user) => {
           const imageName = getImageName(user.first_name, user.last_name);
           return (
@@ -918,9 +870,6 @@ export default function Dashboard({ user, onLogout }) {
           );
         })}
 
-        {/* ============================================================ */}
-        {/* 🥈 رتبه دوم - همه افراد با rank === 2 */}
-        {/* ============================================================ */}
         {rankedLeaderboard.filter(p => p.rank === 2).map((user) => {
           const imageName = getImageName(user.first_name, user.last_name);
           return (
@@ -971,9 +920,6 @@ export default function Dashboard({ user, onLogout }) {
           );
         })}
 
-        {/* ============================================================ */}
-        {/* 🥉 رتبه سوم - همه افراد با rank === 3 */}
-        {/* ============================================================ */}
         {rankedLeaderboard.filter(p => p.rank === 3).map((user) => {
           const imageName = getImageName(user.first_name, user.last_name);
           return (
@@ -1027,7 +973,6 @@ export default function Dashboard({ user, onLogout }) {
       </div>
     </div>
     
-    {/* دکمه اسکرول */}
     <div className="flex justify-center mt-3">
       <button 
         onClick={() => {
@@ -1046,9 +991,7 @@ export default function Dashboard({ user, onLogout }) {
   </section>
 )}
         
-        {/* ======================================================== */}
         {/* سکشن پیش‌بینی قهرمان */}
-        {/* ======================================================== */}
         {!loading && (
           <section className="px-6">
             {championPrediction ? (
@@ -1109,7 +1052,6 @@ export default function Dashboard({ user, onLogout }) {
               )
             )}
 
-            {/* آکاردئون لیست قهرمان‌های بقیه */}
             {isChampionDeadlinePassed && (
               <div className="mt-4">
                 <button 
@@ -1191,7 +1133,6 @@ export default function Dashboard({ user, onLogout }) {
 
                         {showChampionAnalytics && (
                           <div className="mt-3 space-y-3">
-                            {/* قهرمان واقعی */}
                             {actualChampion && (
                               <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-3 text-white text-center shadow">
                                 <p className="text-[10px] font-bold opacity-90">🏆 قهرمان واقعی جام</p>
@@ -1206,7 +1147,6 @@ export default function Dashboard({ user, onLogout }) {
                               </div>
                             )}
 
-                            {/* آمار کلی */}
                             <div className="grid grid-cols-2 gap-2">
                               <div className="bg-white rounded-xl p-2 border border-slate-100 text-center shadow-sm">
                                 <p className="text-[9px] font-bold text-slate-400">تعداد پیش‌بینی‌ها</p>
@@ -1218,7 +1158,6 @@ export default function Dashboard({ user, onLogout }) {
                               </div>
                             </div>
 
-                            {/* پیش‌بینی‌کنندگان درست */}
                             {championAnalytics.correctPredictors.length > 0 && (
                               <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-3 border border-emerald-200">
                                 <div className="flex items-center gap-2 mb-1.5">
@@ -1240,7 +1179,6 @@ export default function Dashboard({ user, onLogout }) {
                               </div>
                             )}
 
-                            {/* گرگ‌های تنها */}
                             {championAnalytics.underdogs.length > 0 && (
                               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-2.5 border border-amber-200">
                                 <div className="flex items-center gap-1.5 mb-1">
@@ -1263,7 +1201,6 @@ export default function Dashboard({ user, onLogout }) {
                               </div>
                             )}
 
-                            {/* نمودار درصد انتخاب‌ها */}
                             <div className="bg-white rounded-xl p-3 border border-slate-100 shadow-sm">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-sm">📊</span>
@@ -1305,7 +1242,6 @@ export default function Dashboard({ user, onLogout }) {
                               </div>
                             </div>
 
-                            {/* جایزه جکپات */}
                             <div className="bg-gradient-to-r from-[#FDBA2D]/20 to-[#F59E0B]/20 rounded-xl p-3 border border-[#FDBA2D]/30">
                               <div className="flex items-center gap-1.5 mb-1">
                                 <span className="text-base">🎰</span>
@@ -1327,7 +1263,6 @@ export default function Dashboard({ user, onLogout }) {
                               )}
                             </div>
 
-                            {/* دکمه مشاهده در مرکز آنالیز */}
                             <button
                               onClick={() => {
                                 setIsTourneyModalOpen(true);
@@ -1349,7 +1284,7 @@ export default function Dashboard({ user, onLogout }) {
           </section>
         )}
 
-        {/* تالار افتخارات - فقط اگر کاربر فعال وجود داشته باشد */}
+        {/* تالار افتخارات */}
         {!loading && activeUsers.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-3 px-6">
@@ -1591,7 +1526,6 @@ export default function Dashboard({ user, onLogout }) {
                             {person.first_name} {person.last_name}
                           </span>
                           
-                          {/* نمایش پرچم قهرمان اگر ددلاین گذشته باشد */}
                           {isChampionDeadlinePassed && userProfile?.champion_prediction && (
                             <div className={`flex items-center gap-1 px-1 py-0.5 rounded-md border shadow-sm shrink-0 ${isCorrectChampion ? 'bg-emerald-100 border-emerald-400' : eliminatedTeams.includes(userProfile.champion_prediction) ? 'bg-slate-100 border-slate-200 opacity-60' : 'bg-[#FDBA2D]/20 border-[#FDBA2D]/30'}`} 
                                  title={`پیش‌بینی قهرمان: ${userProfile.champion_prediction}${isCorrectChampion ? ' ✅ درست!' : ''}${eliminatedTeams.includes(userProfile.champion_prediction) && !isCorrectChampion ? ' (حذف شده ❌)' : ''}`}>
@@ -1724,7 +1658,6 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       </div>
 
-      {/* دکمه شناور مرکز آنالیز */}
       <button 
         onClick={() => setIsTourneyModalOpen(true)}
         className="fixed bottom-8 left-6 z-[150] bg-gradient-to-tr from-[#00194C] to-[#3b82f6] text-white rounded-2xl p-4 shadow-xl hover:scale-105 transition-transform flex items-center gap-2 border border-white/20"
@@ -1733,7 +1666,6 @@ export default function Dashboard({ user, onLogout }) {
         <span className="font-black text-sm hidden md:inline">مرکز آنالیز</span>
       </button>
 
-      {/* ✅ دکمه مشاهده مجدد Wrapped - برای همه کاربران */}
       {hasSeenWrapped && (
         <button 
           onClick={handleReplayWrapped}
@@ -1744,7 +1676,6 @@ export default function Dashboard({ user, onLogout }) {
         </button>
       )}
 
-      {/* مودال انتخاب قهرمان */}
       {isChampionModalOpen && !isChampionDeadlinePassed && (
         <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-[#00194C]/80 backdrop-blur-md animate-fade-in">
           <div className="bg-white w-full max-w-md rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
@@ -1794,7 +1725,6 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       )}
 
-      {/* مرکز آنالیز جام */}
       {isTourneyModalOpen && tournamentSummary && (
         <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-[#00194C]/70 backdrop-blur-md animate-fade-in">
           <div className="bg-white w-full max-w-sm rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
