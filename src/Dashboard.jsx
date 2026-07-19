@@ -1045,7 +1045,6 @@ export default function Dashboard({ user, onLogout }) {
     </div>
   </section>
 )}
-       {/* ✅ مودال Wrapped - برای همه کاربران */}
         
         {/* ======================================================== */}
         {/* سکشن پیش‌بینی قهرمان */}
@@ -2365,64 +2364,6 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       )}
 
-            {/* ✅ مودال Wrapped - برای همه کاربران */}
-      {showWrapped && (
-        <WrappedModal
-          isOpen={showWrapped}
-          onClose={() => setShowWrapped(false)}
-          user={user}
-          matches={matches}
-          predictions={matches.flatMap(m => m.predictions || [])}
-          profiles={allProfiles}
-          leaderboard={leaderboard}
-        />
-      )}
-
-      {/* ======================================================== */}
-      {/* ✅ مودال استوری تمام صفحه */}
-      {/* ======================================================== */}
-      {fullStoryUser && (
-        <div 
-          className="fixed inset-0 z-[999] bg-black flex items-center justify-center"
-          onClick={() => setFullStoryUser(null)}
-        >
-          <div className="relative w-full max-w-md h-full max-h-[800px]">
-            <img 
-              src={`/images/rank${fullStoryUser.rank}-${fullStoryUser.imageName}.jpg`}
-              alt={`${fullStoryUser.first_name} ${fullStoryUser.last_name}`}
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                e.target.src = `/images/rank${fullStoryUser.rank}-default.jpg`;
-              }}
-            />
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl">
-                  {fullStoryUser.rank === 1 ? '👑' : fullStoryUser.rank === 2 ? '🥈' : '🥉'}
-                </span>
-                <span className={`text-sm font-bold ${fullStoryUser.rank === 1 ? 'text-[#FDBA2D]' : 'text-white/70'}`}>
-                  رتبه {fullStoryUser.rank}
-                </span>
-              </div>
-              <h2 className="text-2xl font-black">{fullStoryUser.first_name} {fullStoryUser.last_name}</h2>
-              <p className={`text-lg font-bold ${fullStoryUser.rank === 1 ? 'text-[#FDBA2D]' : 'text-white/80'}`}>
-                {fullStoryUser.total_points} امتیاز
-              </p>
-              {fullStoryUser.champion_prediction && (
-                <p className="text-sm text-white/60 mt-1">
-                  🏆 پیش‌بینی قهرمان: {fullStoryUser.champion_prediction}
-                </p>
-              )}
-            </div>
-            <button 
-              className="absolute top-4 right-4 text-white/50 hover:text-white text-2xl w-10 h-10 rounded-full bg-black/30 flex items-center justify-center backdrop-blur-sm"
-              onClick={() => setFullStoryUser(null)}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 }  
