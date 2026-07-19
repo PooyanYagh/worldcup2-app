@@ -794,7 +794,7 @@ export default function Dashboard({ user, onLogout }) {
       {/* 📱 سکوهای قهرمانی - استوری اینستاگرام */}
       {/* ======================================================== */}
       {!loading && rankedLeaderboard.length >= 3 && (
-        <section className="px-0 -mt-30 relative z-20">
+        <section className="px-0 -mt-16 relative z-20">
           <div className="flex items-center justify-between px-4 mb-3">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🏆</span>
